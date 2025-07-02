@@ -30,16 +30,23 @@
       z-index: -2;
     }
 
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: -1;
-    }
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(58, 0, 106, 0.9),   /* #3A006A - Morado arriba */
+    rgba(0, 204, 153, 0.9),  /* #00CC99 - Verde suave al centro */
+    rgba(4, 18, 63, 0.9)     /* #04123F - Azul oscuro abajo */
+  );
+  z-index: -1;
+}
+
+    
 
     .header-container {
       position: relative;
