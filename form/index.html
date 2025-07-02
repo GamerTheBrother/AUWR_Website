@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AUWR Form</title>
+ <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+  margin: 0;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background: url(assets/background.jpg) center/cover no-repeat fixed;
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* centra verticalmente */
+  backdrop-filter: blur(4px) brightness(0.3);
+  text-align: center;
+}
+
+    h1 {
+      margin-top: 40px;
+      font-size: 1.8rem;
+    }
+
+    p {
+      margin-top: 5px;
+      margin-bottom: 30px;
+      font-size: 1rem;
+      text-align: center;
+      max-width: 400px;
+      color: #ccc;
+    }
+    .logo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: white;
+  padding: 3px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  margin-bottom: 20px;
+}
+
+
+    form {
+      max-width: 420px;
+      width: 85%;
+      background: rgba(0,0,0,0.5);
+      padding: 30px;
+      border-radius: 12px;
+    }
+
+    .step {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step.active {
+      display: flex;
+    }
+
+    label {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .options label {
+      font-weight: normal;
+    }
+
+    button {
+      background: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+        width: 100%;
+  box-sizing: border-box;
+    }
+
+    button:hover {
+      background: #e0e0e0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden {
+      display: none;
+    }
+    input.shake {
+  border: 2px solid #ff4d4d;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-6px); }
+  50%  { transform: translateX(6px); }
+  75%  { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+  </style>
+</head>
+<body>
+  <img src="assets/logo-auwr.png" alt="AUWR Logo" class="logo">
+  <h1>Keen to try Underwater Rugby?</h1>
+  <p>Register your interest for an introductory session here!<br>All ages and experience welcome.</p>
+
+  <form action="https://formsubmit.co/contact@auwr.co.nz" method="POST" id="typeform">
+    <!-- 1. Nombre -->
+    <div class="step active">
+      <label>Your name:</label>
+      <input type="text" name="Name" required />
+      <button type="button" class="next">Next</button>
+    </div>
+
+    <!-- 2. Email -->
+    <div class="step">
+      <label>Your email:</label>
+      <input type="email" name="Email" required />
+      <button type="button" class="next">Next</button>
+    </div>
+
+    <!-- 3. Preferred Session Time -->
+    <div class="step">
+      <label>Preferred Session Time:</label>
+      <div class="options">
+        <label><input type="radio" name="Preferred Session Time" value="Sunday 5-6:30pm" required /> Sunday 5–6:30pm</label>
+        <label><input type="radio" name="Preferred Session Time" value="Wednesday 6-7pm" /> Wednesday 6–7pm</label>
+        <label><input type="radio" name="Preferred Session Time" value="Other" /> Other</label>
+        <input type="text" name="Other Preferred Time" placeholder="Please specify" class="hidden" />
+      </div>
+      <button type="button" class="next">Next</button>
+    </div>
+
+    <!-- 4. Experience -->
+    <div class="step">
+      <label>Experience:</label>
+      <div class="options">
+        <label><input type="radio" name="Experience" value="Absolute newbie" required /> Absolute newbie</label>
+        <label><input type="radio" name="Experience" value="Newbie who loves the water" /> Newbie who loves the water</label>
+        <label><input type="radio" name="Experience" value="Confident swimmer" /> Confident swimmer</label>
+        <label><input type="radio" name="Experience" value="Snorkelling" /> Snorkelling</label>
+        <label><input type="radio" name="Experience" value="Tried Underwater Rugby before" /> Tried Underwater Rugby before</label>
+        <label><input type="radio" name="Experience" value="Freediver" /> Freediver</label>
+        <label><input type="radio" name="Experience" value="Underwater Hockey player" /> Underwater Hockey player</label>
+      </div>
+      <button type="button" class="next">Next</button>
+    </div>
+
+    <!-- 5. Gear -->
+    <div class="step">
+      <label>Gear you will need to borrow:</label>
+      <div class="options">
+        <label><input type="checkbox" name="Gear[]" value="Mask" /> Mask</label>
+        <label><input type="checkbox" name="Gear[]" value="Snorkel" /> Snorkel</label>
+        <label><input type="checkbox" name="Gear[]" value="Fins" /> Fins</label>
+        <label><input type="checkbox" name="Gear[]" value="Caps" /> Caps</label>
+        <label><input type="checkbox" name="Gear[]" value="None" /> None</label>
+      </div>
+      <button type="button" class="next">Next</button>
+    </div>
+
+    <!-- 6. Fin size -->
+    <div class="step">
+      <label>Fin size (if borrowing):</label>
+      <div class="options">
+        <label><input type="radio" name="Fin size" value="38-39" required /> 38–39</label>
+        <label><input type="radio" name="Fin size" value="40-41" /> 40–41</label>
+        <label><input type="radio" name="Fin size" value="42-43" /> 42–43</label>
+        <label><input type="radio" name="Fin size" value="42-43" /> none</label>
+      </div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+  <script>
+  const steps = document.querySelectorAll('.step');
+  const nextBtns = document.querySelectorAll('.next');
+  const otherRadio = document.querySelector('input[value="Other"]');
+  const otherText = document.querySelector('input[name="Other Preferred Time"]');
+
+  let current = 0;
+
+  function validateStep(stepElement) {
+  let valid = true;
+  const inputs = stepElement.querySelectorAll('input');
+
+  inputs.forEach(input => {
+    input.classList.remove('shake');
+
+    if (input.type === 'radio' || input.type === 'checkbox') {
+      if (input.required) {
+        const group = stepElement.querySelectorAll(`input[name="${input.name}"]`);
+        const isChecked = Array.from(group).some(i => i.checked);
+        if (!isChecked) {
+          valid = false;
+          group.forEach(i => i.classList.add('shake'));
+        }
+      }
+    } else if (!input.checkValidity()) {
+      input.classList.add('shake');
+      valid = false;
+    }
+  });
+
+  // Eliminar shake después de 300ms
+  setTimeout(() => {
+    inputs.forEach(input => input.classList.remove('shake'));
+  }, 300);
+
+  return valid;
+}
+
+  nextBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!validateStep(steps[current])) return;
+      steps[current].classList.remove('active');
+      current++;
+      if (steps[current]) steps[current].classList.add('active');
+    });
+  });
+
+  // Toggle input field for "Other"
+  otherRadio.addEventListener('change', () => {
+    if (otherRadio.checked) {
+      otherText.classList.remove('hidden');
+      otherText.required = true;
+    }
+  });
+
+  const radios = document.querySelectorAll('input[name="Preferred Session Time"]');
+  radios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.value !== "Other") {
+        otherText.classList.add('hidden');
+        otherText.required = false;
+        otherText.value = '';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
