@@ -1,601 +1,2659 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.1.223">
-    <title>AUWR | Home</title>
-    <link rel="icon" type="image/png" href="img/favicon.ico">
-    <link rel="apple-touch-icon" href="img/favicon.ico">
-    <meta property="og:title" content="AUWR | Home">
-    <meta property="twitter:title" content="AUWR | Home">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Font: Inter (or a similar sans-serif font) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Prevent horizontal scroll on smaller screens */
-        }
-        /* Custom styles for background images to ensure good coverage */
-        .hero-background {
-            background-image: url('images/image-3.png'); /* This image assumes to be the hero background */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Optional: Add a subtle overlay for text readability */
-            position: relative;
-            z-index: 0;
-        }
-        .hero-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
-            z-index: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUWR | Auckland Underwater Rugby</title>
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="apple-touch-icon" href="img/favicon.ico">
+  <meta property="og:title" content="AUWR | Auckland Underwater Rugby">
+  <meta property="og:description" content="New Zealand's premier competitive Underwater Rugby team. Train. Compete. Dominate.">
 
-        /* Specific background for the "The world's only 3D team sport" block, if it's an image */
-        .uwr-3d-sport-bg {
-            background-image: url('images/image-4.png'); /* This image assumes to be for the 3D sport section */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Custom dark blue for the footer and specific sections */
-        .bg-dark-blue {
-            background-color: #1a202c; /* Equivalent to gray-900 but can be customized */
-        }
-        .text-light-gray {
-            color: #d1d5db; /* Equivalent to gray-300 */
-        }
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 
-        /* Smooth scrolling for anchor links */
-        html {
-            scroll-behavior: smooth;
-        }
+  <style>
+    :root {
+      --bg-primary: #04080f;
+      --bg-secondary: #080f1c;
+      --bg-card: #0c1524;
+      --bg-card-hover: #111e35;
+      --accent-blue: #00b4ff;
+      --accent-cyan: #00ffea;
+      --accent-glow: rgba(0, 180, 255, 0.35);
+      --text-primary: #edf2ff;
+      --text-muted: #9ab8d0;
+      --border: rgba(0, 180, 255, 0.18);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
 
-        /* Responsive circular images for the app section */
-        .circular-image {
-            width: 80px; /* Adjust size as needed */
-            height: 80px; /* Adjust size as needed */
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid white; /* White border as seen in the image */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        .circular-image:hover {
-            transform: scale(1.05);
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Adjusting for overlapping circular images */
-        .circular-image-group > *:not(:first-child) {
-            margin-left: -25px; /* Adjust for overlap */
-        }
-    </style>
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 2px; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s ease, backdrop-filter 0.4s ease, padding 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(4, 8, 15, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2.5rem;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: #c8daea;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent-blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      background: var(--accent-blue);
+      color: #000 !important;
+      padding: 0.55rem 1.4rem;
+      border-radius: 100px;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      letter-spacing: 0.02em;
+      transition: box-shadow 0.3s ease, transform 0.2s ease !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      box-shadow: 0 0 28px var(--accent-glow) !important;
+      transform: translateY(-1px);
+      color: #000 !important;
+    }
+
+    /* Mobile menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text-primary);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 15, 0.97);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--accent-blue); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('images/image-3.png');
+      background-size: cover;
+      background-position: center;
+      transform-origin: center;
+      filter: brightness(0.35) saturate(0.8);
+    }
+    #bubble-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, var(--bg-primary) 100%);
+      z-index: 2;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding: 0 1.5rem;
+      max-width: 900px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-blue);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent-blue);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .word { display: inline-block; transform: translateY(110%); }
+    .hero-title .accent { color: var(--accent-blue); }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: #c8daea;
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      opacity: 0;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--accent-blue);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 100px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: box-shadow 0.3s, transform 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(0,180,255,0.15);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 100px;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.3s, color 0.3s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+    }
+    .scroll-hint span {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--accent-blue), transparent);
+      animation: scrollPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.6); transform-origin: top; }
+      50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-section {
+      padding: 1.5rem 0;
+      background: var(--accent-blue);
+      overflow: hidden;
+      position: relative;
+      z-index: 10; /* stay above sport section's negative-margin overlap */
+    }
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-track span {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .marquee-track .dot { color: rgba(0,0,0,0.4); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 7rem 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .container-wide { max-width: 1400px; margin: 0 auto; }
+
+    /* ─── SECTION LABELS ─── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--accent-blue);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--accent-blue);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .section-body {
+      color: #b8d0e4;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      max-width: 540px;
+    }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(40px); }
+    .reveal-left { opacity: 0; transform: translateX(-50px); }
+    .reveal-right { opacity: 0; transform: translateX(50px); }
+    .reveal-scale { opacity: 0; transform: scale(0.9); }
+
+    /* ─── FULL-SCREEN SECTION BASE ─── */
+    .section-full-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+      will-change: transform;
+    }
+    .section-full-bg-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ─── SPORT INTRO — full screen ─── */
+    #sport {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+    .sport-full-layout {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    .sport-full-panel {
+      width: 58%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: clamp(4rem,8vw,9rem) clamp(3rem,6vw,7rem) clamp(4rem,8vw,9rem) clamp(2rem,5vw,6rem);
+      position: relative;
+    }
+    .sport-full-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg,
+        rgba(4,8,15,0.98) 0%,
+        rgba(4,8,15,0.95) 55%,
+        rgba(4,8,15,0.6) 78%,
+        transparent 100%);
+      clip-path: polygon(0 0, 100% 0, 84% 100%, 0 100%);
+      z-index: 0;
+    }
+    .sport-full-panel-inner { width: 100%; max-width: 540px; position: relative; z-index: 1; }
+    /* floating HUD stats — bottom right corner */
+    .sport-hud-overlay {
+      position: absolute;
+      bottom: 3.5rem; right: 3.5rem;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+    .sport-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 180, 255, 0.15);
+      border: 1px solid rgba(0, 180, 255, 0.4);
+      color: var(--accent-blue);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 0.5rem 1.1rem;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      backdrop-filter: blur(8px);
+    }
+    .sport-hud-stats {
+      display: flex;
+      gap: 1rem;
+    }
+    .sport-hud-stat {
+      background: rgba(4,8,15,0.85);
+      border: 1px solid rgba(0,180,255,0.25);
+      padding: 1rem 1.5rem;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      min-width: 90px;
+    }
+    @media (max-width: 900px) {
+      .sport-full-panel { width: 100%; padding: 7rem 2rem 3rem; }
+      .sport-full-panel::before { clip-path: none; background: rgba(4,8,15,0.88); }
+      .sport-hud-overlay { display: none; }
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+    @media (max-width: 600px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
+    .stat-item {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: background 0.3s ease;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: var(--bg-card-hover); }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: #b8d0e4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── TEAM / WOMEN — full screen panels ─── */
+    #team, #women {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+    #women { background: var(--bg-primary); }
+
+    /* shared layout wrapper */
+    .fullscreen-layout {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    .fullscreen-layout.align-right { justify-content: flex-end; }
+
+    /* the angular dark shard — bg lives in ::before so clip-path never hits text */
+    .fullscreen-panel {
+      width: 55%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: clamp(4rem,8vw,9rem) clamp(3rem,5vw,5rem) clamp(4rem,8vw,9rem) clamp(3rem,4vw,4rem);
+      position: relative;
+      /* no background or clip-path on the element itself */
+    }
+    .fullscreen-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    /* left-side panel: cut on right */
+    .fullscreen-panel.left::before {
+      background: linear-gradient(105deg,
+        rgba(4,8,15,0.98) 0%,
+        rgba(4,8,15,0.95) 55%,
+        rgba(4,8,15,0.6) 78%,
+        transparent 100%);
+      clip-path: polygon(0 0, 100% 0, 84% 100%, 0 100%);
+    }
+    /* right-side panel: cut on left */
+    .fullscreen-panel.right::before {
+      background: linear-gradient(255deg,
+        rgba(4,8,15,0.98) 0%,
+        rgba(4,8,15,0.95) 55%,
+        rgba(4,8,15,0.6) 78%,
+        transparent 100%);
+      clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    /* text sits above the pseudo-element bg */
+    .fullscreen-panel-inner { width: 100%; max-width: 520px; position: relative; z-index: 1; }
+    /* push text toward the solid edge of the right panel */
+    .fullscreen-panel.right .fullscreen-panel-inner { margin-left: auto; padding-right: clamp(1rem,3vw,3rem); }
+
+    /* quote overlay floating bottom of photo side */
+    .fullscreen-quote {
+      position: absolute;
+      bottom: 3rem;
+      z-index: 3;
+      background: rgba(4, 8, 15, 0.82);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(0,180,255,0.2);
+      padding: 1.25rem 1.75rem;
+      max-width: 360px;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    }
+    .fullscreen-quote.left  { left: 3rem; }
+    .fullscreen-quote.right { right: 3rem; }
+    .quote-text {
+      font-style: italic;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+    .quote-attr {
+      color: var(--accent-blue);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 900px) {
+      .fullscreen-layout { align-items: stretch; }
+      .fullscreen-panel { width: 100%; padding: 7rem 2rem 12rem; align-self: stretch; }
+      .fullscreen-panel::before { clip-path: none !important; background: rgba(4,8,15,0.88) !important; }
+      .fullscreen-quote { bottom: 2rem; left: 1.5rem; right: 1.5rem; max-width: 100%; }
+    }
+
+    /* ─── ACHIEVEMENTS — shard accordion ─── */
+    #achievements {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-primary);
+      padding: 0;
+    }
+    .achievements-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 5rem clamp(1.5rem,4vw,4rem) 2.5rem;
+      position: relative;
+      z-index: 2;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .achievements-header-bar p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+    .achievement-shards {
+      display: flex;
+      height: 92vh;
+      min-height: 560px;
+      position: relative;
+      z-index: 1;
+    }
+    .ac-shard {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, calc(100% - 30px) 100%, 0 100%);
+      margin-right: -30px;
+      transition: flex 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      z-index: 1;
+    }
+    .ac-shard:last-child { clip-path: none; margin-right: 0; }
+    .ac-shard:hover:not(.active) .ac-shard-bg { filter: brightness(0.38) saturate(0.65); }
+    .ac-shard.active { flex: 4.5; z-index: 2; }
+    .ac-shard-bg {
+      position: absolute;
+      inset: -8%;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.28) saturate(0.55);
+      transition: filter 0.6s ease;
+      will-change: transform;
+    }
+    .ac-shard.active .ac-shard-bg { filter: brightness(0.55) saturate(0.9); }
+    /* top accent line */
+    .ac-shard-accent {
+      position: absolute;
+      top: 0; left: 0; right: 30px;
+      height: 2px;
+      background: var(--accent-blue);
+      box-shadow: 0 0 12px rgba(0,180,255,0.6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.05s;
+      z-index: 4;
+    }
+    .ac-shard:last-child .ac-shard-accent { right: 0; }
+    .ac-shard.active .ac-shard-accent { transform: scaleX(1); }
+    /* large number watermark */
+    .ac-shard-num {
+      position: absolute;
+      top: 1.5rem; left: 1.5rem;
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 7vw, 6rem);
+      font-weight: 900;
+      color: rgba(255,255,255,0.05);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      transition: color 0.4s, transform 0.4s;
+      z-index: 2;
+      user-select: none;
+    }
+    .ac-shard.active .ac-shard-num { color: rgba(0,180,255,0.08); transform: translateY(-10px); }
+    /* placement badge */
+    .ac-shard-badge {
+      position: absolute;
+      top: 1.5rem; right: calc(30px + 0.75rem);
+      font-family: var(--font-display);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      z-index: 4;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    }
+    .ac-shard:last-child .ac-shard-badge { right: 0.75rem; }
+    .ac-shard.active .ac-shard-badge { opacity: 1; transform: translateY(0); }
+    .ac-shard-badge.gold   { background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.55); color: #d4af37; }
+    .ac-shard-badge.bronze { background: rgba(205,127,50,0.18); border: 1px solid rgba(205,127,50,0.5); color: #cd7f32; }
+    .ac-shard-badge.coming { background: rgba(0,180,255,0.15); border: 1px solid rgba(0,180,255,0.4); color: var(--accent-blue); }
+    .ac-shard-badge.blue   { background: rgba(0,180,255,0.15); border: 1px solid rgba(0,180,255,0.35); color: var(--accent-blue); }
+    /* vertical label when collapsed — writing-mode for crisp vertical text */
+    .ac-shard-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 1.1vw, 1.1rem);
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      transition: opacity 0.25s ease;
+      z-index: 3;
+      pointer-events: none;
+      max-height: 80%;
+      overflow: hidden;
+    }
+    .ac-shard.active .ac-shard-label { opacity: 0; }
+    /* content reveal at bottom */
+    .ac-shard-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 3rem 2.5rem 2.5rem;
+      background: linear-gradient(to top, rgba(4,8,15,0.98) 0%, rgba(4,8,15,0.7) 50%, transparent 100%);
+      z-index: 3;
+    }
+    .ac-shard-flag {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s;
+    }
+    .ac-shard.active .ac-shard-flag { opacity: 1; transform: translateY(0); }
+    .ac-shard-flag img { width: 20px; border-radius: 2px; }
+    .ac-shard-title {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.2vw, 1.9rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.15;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+    }
+    .ac-shard.active .ac-shard-title { opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) {
+      .achievement-shards { flex-direction: column; height: auto; }
+      .ac-shard { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%); margin-right: 0; margin-bottom: -20px; min-height: 150px; transition: min-height 0.6s; }
+      .ac-shard:last-child { clip-path: none; margin-bottom: 0; }
+      .ac-shard.active { flex: 1; min-height: 360px; }
+      .ac-shard-label { writing-mode: horizontal-tb; transform: translate(-50%, -50%); }
+    }
+
+    /* ─── ABOUT BRUTAL ─── */
+    #about {
+      background: var(--bg-primary);
+      padding: 5rem 0 0;
+      overflow: hidden;
+    }
+    .about-header-wrap {
+      padding: 0 2rem 3.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .shards-container {
+      display: flex;
+      height: 88vh;
+      min-height: 560px;
+    }
+    .shard {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 0 100%);
+      margin-right: -28px;
+      transition: flex 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      z-index: 1;
+    }
+    .shard:last-child {
+      clip-path: none;
+      margin-right: 0;
+    }
+    .shard:hover { flex: 3.2; z-index: 2; }
+    .shard:hover ~ .shard { z-index: 1; }
+
+    .shard-bg {
+      position: absolute;
+      inset: -8%;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35) saturate(0.6);
+      transition: filter 0.6s ease;
+      will-change: transform;
+    }
+    .shard:hover .shard-bg {
+      filter: brightness(0.55) saturate(0.85);
+    }
+
+    .shard-accent {
+      position: absolute;
+      top: 0; left: 0; right: 28px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-blue), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 3;
+    }
+    .shard:last-child .shard-accent { right: 0; }
+    .shard:hover .shard-accent { transform: scaleX(1); }
+
+    .shard-num {
+      position: absolute;
+      top: 2rem; left: 2rem;
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 10vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: rgba(0, 180, 255, 0.07);
+      transition: color 0.5s ease, transform 0.6s ease;
+      z-index: 2;
+      user-select: none;
+    }
+    .shard:hover .shard-num {
+      color: rgba(0, 180, 255, 0.12);
+      transform: translateY(-8px);
+    }
+
+    .shard-content {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      padding: 2.5rem 2rem 2rem;
+      background: linear-gradient(to bottom,
+        rgba(4,8,15,0.97) 0%,
+        rgba(4,8,15,0.75) 35%,
+        rgba(4,8,15,0.15) 60%,
+        rgba(4,8,15,0.55) 85%,
+        rgba(4,8,15,0.92) 100%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .shard-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-blue);
+      margin-bottom: 0.6rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+    }
+    .shard:hover .shard-tag { opacity: 1; transform: translateY(0); }
+
+    .shard-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      transform: translateY(8px);
+      transition: transform 0.4s ease;
+    }
+    .shard:hover .shard-title { transform: translateY(0); }
+
+    .shard-text {
+      font-size: 0.92rem;
+      color: #c8daea;
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.45s ease 0.15s, transform 0.45s ease 0.15s;
+      max-width: 380px;
+    }
+    .shard:hover .shard-text { opacity: 1; transform: translateY(0); }
+
+    /* quote pinned to bottom */
+    .shard-quote {
+      margin-top: auto;
+      padding: 0.9rem 1.1rem;
+      border-left: 2px solid var(--accent-blue);
+      background: rgba(0, 180, 255, 0.07);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s ease 0.28s, transform 0.45s ease 0.28s;
+    }
+    .shard:hover .shard-quote { opacity: 1; transform: translateY(0); }
+    .shard-quote p {
+      font-style: italic;
+      font-size: 0.85rem;
+      color: #b8d0e4;
+      margin-bottom: 0.35rem;
+      line-height: 1.5;
+    }
+    .shard-quote span { color: var(--accent-blue); font-size: 0.75rem; font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .shards-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .shard {
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
+        margin-right: 0;
+        margin-bottom: -20px;
+        min-height: 260px;
+        flex: 1;
+        transition: min-height 0.6s ease;
+      }
+      .shard:last-child { clip-path: none; margin-bottom: 0; }
+      .shard:hover { flex: 1; min-height: 420px; }
+      .shard-accent { top: 0; right: 0; bottom: auto; height: 3px; }
+      .shard-text, .shard-quote { max-width: 100%; }
+    }
+
+    /* ─── JOIN ─── */
+    #join {
+      background: var(--bg-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    #join::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0, 180, 255, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .join-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .join-grid { grid-template-columns: 1fr; gap: 3rem; } }
+    .join-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .join-info-icon {
+      width: 44px; height: 44px;
+      border-radius: 0.6rem;
+      background: rgba(0, 180, 255, 0.1);
+      border: 1px solid rgba(0, 180, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .join-info-content h4 {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #9ab8d0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .join-info-content p, .join-info-content a {
+      color: var(--text-primary);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .join-info-content a:hover { color: var(--accent-blue); }
+
+    /* Form */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #b8d0e4;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 0.85rem 1.1rem;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(0, 180, 255, 0.1);
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent-blue);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      transition: box-shadow 0.3s, transform 0.2s;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .btn-submit:hover {
+      box-shadow: 0 0 30px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ─── VIDEO ─── */
+    #video-section {
+      background: var(--bg-primary);
+    }
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 3rem auto 0;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 80px rgba(0, 180, 255, 0.06);
+      border: 1px solid var(--border);
+    }
+    .video-thumb-link {
+      display: block;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 1rem;
+    }
+    .video-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease, filter 0.4s ease;
+      filter: brightness(0.82);
+    }
+    .video-thumb-link:hover .video-thumb-img {
+      transform: scale(1.04);
+      filter: brightness(0.65);
+    }
+    .video-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      pointer-events: none;
+    }
+    .video-play-btn {
+      width: 72px;
+      height: 72px;
+      background: rgba(0,0,0,0.75);
+      border: 2px solid rgba(255,255,255,0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      transition: background 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .video-thumb-link:hover .video-play-btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.12);
+    }
+    .video-thumb-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      transition: color 0.3s;
+    }
+    .video-thumb-link:hover .video-thumb-label { color: #fff; }
+
+    /* ─── COMMUNITY APP ─── */
+    #app-section {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      background: var(--bg-primary);
+    }
+    #app-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('images/photos/FullSizeRender2.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.1) saturate(0.3);
+      z-index: 0;
+    }
+    #app-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(4,8,15,0.97) 0%,
+        rgba(4,8,15,0.8) 50%,
+        rgba(0,180,255,0.04) 100%);
+      z-index: 0;
+    }
+    /* large diagonal accent right side */
+    .app-section-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 6rem clamp(1.5rem,4vw,4rem);
+    }
+    .app-left { }
+    .app-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+    .app-tagline span { color: var(--accent-blue); }
+    .app-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 2.5rem;
+    }
+    .app-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .app-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.25rem;
+      background: rgba(0,180,255,0.06);
+      border: 1px solid rgba(0,180,255,0.15);
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .app-feature-item:hover {
+      background: rgba(0,180,255,0.12);
+      border-color: rgba(0,180,255,0.35);
+    }
+    .app-feature-icon {
+      font-size: 1.3rem;
+      width: 2rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .app-feature-text { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; }
+    .app-feature-sub  { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+    /* member avatars */
+    .app-members {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .app-photos {
+      display: flex;
+    }
+    .app-photos img {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--bg-primary);
+      margin-left: -12px;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    .app-photos img:first-child { margin-left: 0; }
+    .app-photos img:hover { transform: translateY(-4px) scale(1.1); z-index: 10; }
+    .app-member-label { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+    .app-member-label strong { color: var(--text-primary); display: block; }
+    /* right — big stat cards */
+    .app-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .app-stat-card {
+      padding: 2rem 1.75rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(0,180,255,0.12);
+      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+      transition: background 0.3s, border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .app-stat-card:hover { background: rgba(0,180,255,0.07); border-color: rgba(0,180,255,0.3); }
+    .app-stat-card:hover::before { transform: scaleX(1); }
+    .app-stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      color: var(--accent-blue);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .app-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .coming-soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(0, 180, 255, 0.1);
+      border: 1px solid rgba(0, 180, 255, 0.3);
+      color: var(--accent-blue);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.25rem;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      margin-bottom: 1.5rem;
+    }
+    .coming-soon-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+    .footer-brand img { height: 48px; margin-bottom: 1rem; }
+    .footer-brand p { color: #b8d0e4; font-size: 0.9rem; line-height: 1.7; max-width: 300px; }
+    .footer-col h4 {
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #9ab8d0;
+      margin-bottom: 1.25rem;
+    }
+    .footer-col a {
+      display: block;
+      color: #b8d0e4;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--text-primary); }
+    .social-links { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .social-link {
+      width: 40px; height: 40px;
+      border-radius: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #b8d0e4;
+      font-size: 1rem;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .social-link:hover { border-color: var(--accent-blue); color: var(--accent-blue); transform: translateY(-2px); }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-bottom p { color: #9ab8d0; font-size: 0.82rem; }
+    .footer-bottom a { color: #9ab8d0; text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-bottom a:hover { color: var(--accent-blue); }
+
+    /* ─── WOMEN SECTION ─── */
+    #women { background: var(--bg-primary); }
+
+    /* ─── GALLERY TICKER ─── */
+    #gallery {
+      background: var(--bg-secondary);
+      overflow: hidden;
+      padding: 0;
+      position: relative;
+    }
+    .gallery-header-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 4rem clamp(1.5rem,4vw,4rem) 5rem;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(4,8,15,0.95) 0%, rgba(4,8,15,0.5) 55%, transparent 100%);
+      pointer-events: none;
+    }
+    .gallery-ticker {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow: hidden;
+    }
+    .gallery-row { overflow: hidden; position: relative; }
+    .gallery-row-track {
+      display: flex;
+      gap: 0.75rem;
+      width: max-content;
+      animation: ticker-left 90s linear infinite;
+    }
+    .gallery-row.right .gallery-row-track {
+      animation: ticker-right 100s linear infinite;
+    }
+    .gallery-row:nth-child(3) .gallery-row-track { animation-duration: 80s; }
+    .gallery-row:nth-child(4) .gallery-row-track { animation-duration: 110s; }
+    .gallery-row:hover .gallery-row-track { animation-play-state: paused; }
+    @keyframes ticker-left {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes ticker-right {
+      from { transform: translateX(-50%); }
+      to   { transform: translateX(0); }
+    }
+    .ticker-item {
+      height: 210px;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      cursor: pointer;
+    }
+    .ticker-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+      object-fit: cover;
+      filter: brightness(0.82) saturate(0.85);
+      transition: filter 0.4s ease, transform 0.4s ease;
+    }
+    .ticker-item:hover img { filter: brightness(1) saturate(1.1); transform: scale(1.04); }
+    .ticker-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(4,8,15,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 0.9rem 1rem;
+    }
+    .ticker-item:hover .ticker-item-overlay { opacity: 1; }
+    .ticker-item-overlay span {
+      color: var(--text-primary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 15, 0.96);
+      backdrop-filter: blur(20px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 0.75rem;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+    }
+    #lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    #lightbox-close:hover { background: rgba(0,180,255,0.2); }
+    #lightbox-prev, #lightbox-next {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    #lightbox-prev { left: 1.5rem; }
+    #lightbox-next { right: 1.5rem; }
+    #lightbox-prev:hover, #lightbox-next:hover { background: rgba(0,180,255,0.15); border-color: var(--accent-blue); }
+
+    /* ─── UTILS ─── */
+    .glow-text { color: var(--accent-blue); text-shadow: 0 0 40px rgba(0, 180, 255, 0.4); }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 480px) {
+      section { padding: 5rem 1.25rem; }
+      nav { padding: 1rem 1.25rem; }
+      nav.scrolled { padding: 0.75rem 1.25rem; }
+    }
+
+    /* ═══════════════════════════════════════
+       GLOBAL DESIGN LANGUAGE — DIAGONAL / HUD
+    ═══════════════════════════════════════ */
+
+    /* ─── Diagonal slash decorators ─── */
+    .slash-deco {
+      position: absolute;
+      pointer-events: none;
+      overflow: hidden;
+      inset: 0;
+      z-index: 0;
+    }
+    .slash-deco::before,
+    .slash-deco::after {
+      content: '';
+      position: absolute;
+      top: -30%; bottom: -30%;
+      width: 2px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(0,180,255,0.35) 30%,
+        rgba(0,180,255,0.2) 70%,
+        transparent 100%);
+      transform: rotate(-18deg);
+      transform-origin: center;
+    }
+    .slash-deco::before { left: 22%; }
+    .slash-deco::after  { left: 78%; }
+    .slash-wide::before { width: 420px; background: linear-gradient(to right, transparent, rgba(0,180,255,0.07), transparent); left: 15%; }
+    .slash-wide::after  { width: 420px; background: linear-gradient(to right, transparent, rgba(0,180,255,0.05), transparent); right: 12%; left: auto; }
+
+    /* ─── Section angled top cuts — dramatic 120px cuts ─── */
+    .angled-top {
+      position: relative;
+      margin-top: -120px;
+      padding-top: calc(7rem + 120px);
+      clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
+    }
+    .angled-top-r {
+      position: relative;
+      margin-top: -120px;
+      padding-top: calc(7rem + 120px);
+      clip-path: polygon(0 0, 100% 120px, 100% 100%, 0 100%);
+    }
+    @media (max-width: 768px) {
+      .angled-top, .angled-top-r { clip-path: none; margin-top: 0; padding-top: 5rem; }
+    }
+
+    /* ─── HUD corner brackets — large, imposing ─── */
+    .hud {
+      position: relative;
+    }
+    /* hud-br must be absolute so it doesn't participate in grid/flex flow */
+    .hud .hud-br {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .hud::before, .hud::after,
+    .hud .hud-br::before, .hud .hud-br::after {
+      content: '';
+      position: absolute;
+      width: 60px; height: 60px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .hud::before { top: -4px; left: -4px; border-top: 2px solid var(--accent-blue); border-left: 2px solid var(--accent-blue); }
+    .hud::after  { top: -4px; right: -4px; border-top: 2px solid var(--accent-blue); border-right: 2px solid var(--accent-blue); }
+    .hud .hud-br::before { bottom: -4px; left: -4px; border-bottom: 2px solid var(--accent-blue); border-left: 2px solid var(--accent-blue); }
+    .hud .hud-br::after  { bottom: -4px; right: -4px; border-bottom: 2px solid var(--accent-blue); border-right: 2px solid var(--accent-blue); }
+
+    /* ─── Section labels ─── */
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+    }
+
+    /* ─── Diagonal accent bar — thick and bold ─── */
+    .diag-bar {
+      display: block;
+      height: 4px;
+      width: 140px;
+      background: linear-gradient(90deg, var(--accent-blue), rgba(0,180,255,0.3), transparent);
+      transform: skewX(-25deg);
+      margin-bottom: 2rem;
+      box-shadow: 0 0 18px rgba(0,180,255,0.4);
+    }
+
+    /* ─── Big bold section titles ─── */
+    .section-title { letter-spacing: -0.03em; }
+    .title-xl {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+    }
+
+    /* ─── Inline text with slash separator ─── */
+    .slash-sep {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .slash-sep::before {
+      content: '';
+      display: block;
+      width: 40px; height: 2px;
+      background: linear-gradient(to right, var(--accent-blue), transparent);
+      transform: skewX(-20deg);
+      box-shadow: 0 0 8px rgba(0,180,255,0.5);
+    }
+
+    /* ─── Hero geometric overlays ─── */
+    .hero-geo {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+    /* Big angular slab — left side dark accent */
+    .hero-geo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, rgba(4,8,15,0.5) 0%, transparent 45%);
+      clip-path: polygon(0 0, 42% 0, 30% 100%, 0 100%);
+    }
+    /* Right corner angular cut highlight */
+    .hero-geo::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 55%; height: 40%;
+      background: linear-gradient(225deg, rgba(0,180,255,0.06) 0%, transparent 60%);
+      clip-path: polygon(30% 100%, 100% 0, 100% 100%);
+    }
+    .hero-geo-line {
+      position: absolute;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,180,255,0.5) 40%, rgba(0,180,255,0.3) 60%, transparent 100%);
+      width: 2px;
+      top: 0; bottom: 0;
+      transform: skewX(-8deg);
+    }
+    .hero-geo-bar {
+      position: absolute;
+      background: linear-gradient(to right, transparent, rgba(0,180,255,0.1), transparent);
+      height: 100%;
+      transform: skewX(-8deg);
+    }
+    /* Large diagonal frame line crossing hero */
+    .hero-geo-slash {
+      position: absolute;
+      top: -10%; bottom: -10%;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, rgba(0,180,255,0.22), transparent);
+      transform: rotate(-20deg);
+    }
+    .hero-coord {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: rgba(0,180,255,0.55);
+      text-transform: uppercase;
+    }
+    /* Bold bottom edge cut on hero */
+    .hero-bottom-cut {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 130px;
+      background: var(--bg-primary);
+      clip-path: polygon(0 100%, 100% 50%, 100% 100%);
+      z-index: 3;
+    }
+
+    /* ─── Scan line on stats ─── */
+    .stats-bar { position: relative; overflow: hidden; }
+    .stats-bar::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,180,255,0.7), transparent);
+      animation: scan 4s linear infinite;
+      top: 0;
+    }
+    @keyframes scan {
+      0%   { top: 0%; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* ─── JOIN section ─── */
+    #join {
+      position: relative;
+    }
+    .join-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('images/image-3.png');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.08) saturate(0.3);
+      z-index: 0;
+    }
+    .join-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(4,8,15,0.97) 0%,
+        rgba(4,8,15,0.85) 50%,
+        rgba(0,180,255,0.04) 100%);
+      z-index: 0;
+    }
+    #join .container { position: relative; z-index: 1; }
+    /* Large vertical accent stripe */
+    #join::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--accent-blue), transparent);
+      z-index: 1;
+    }
+    /* Big angular shape top-right corner */
+    #join::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 40%; height: 100%;
+      background: linear-gradient(225deg, rgba(0,180,255,0.06) 0%, transparent 55%);
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 100% 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ─── Sport section diagonal accent ─── */
+    #sport .sport-diag-accent {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 55%;
+      background: linear-gradient(to left, rgba(0,180,255,0.06), rgba(0,180,255,0.02), transparent);
+      pointer-events: none;
+      clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+    }
+    /* Extra large diagonal slab behind sport content */
+    #sport::after {
+      content: '';
+      position: absolute;
+      top: -5%; bottom: -5%;
+      right: -5%;
+      width: 50%;
+      background: rgba(0,180,255,0.018);
+      clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    #sport { position: relative; overflow: hidden; }
+    #sport .container { position: relative; z-index: 1; }
+
+    /* ─── Split section diagonal marker — larger ─── */
+    .split-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .split-marker-line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent-blue), rgba(0,180,255,0.3), transparent);
+      transform: skewX(-25deg);
+      box-shadow: 0 0 12px rgba(0,180,255,0.35);
+    }
+    .split-marker-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      box-shadow: 0 0 20px var(--accent-blue), 0 0 40px rgba(0,180,255,0.4);
+    }
+
+    /* ─── Big angular corner on split-media ─── */
+    .split-media {
+      position: relative;
+    }
+    .split-media::before {
+      content: '';
+      position: absolute;
+      top: -6px; left: -6px;
+      width: 90px; height: 90px;
+      border-top: 3px solid var(--accent-blue);
+      border-left: 3px solid var(--accent-blue);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .split-media::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; right: -6px;
+      width: 90px; height: 90px;
+      border-bottom: 3px solid var(--accent-blue);
+      border-right: 3px solid var(--accent-blue);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* ─── Achievements section diagonal accent ─── */
+    .achievements-diag {
+      position: absolute;
+      top: -3rem; right: -2rem;
+      font-family: var(--font-display);
+      font-size: clamp(8rem, 15vw, 14rem);
+      font-weight: 900;
+      color: rgba(0,180,255,0.025);
+      letter-spacing: -0.06em;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      transform: skewX(-8deg);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body>
 
-    <!-- Header Section -->
-    <header class="bg-white shadow-md py-4 px-6 md:px-8 lg:px-12 rounded-b-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo -->
-            <div class="flex items-center">
-                <!-- Using the provided logo image -->
-                <img src="img/img1.png" alt="AUWR Logo" class="h-10 w-auto rounded-lg">
-                <span class="ml-3 text-2xl font-extrabold text-blue-800"></span>
-            </div>
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#sport" onclick="closeMobileMenu()">Sport</a>
+  <a href="#achievements" onclick="closeMobileMenu()">Achievements</a>
+  <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#join" onclick="closeMobileMenu()">Join Us</a>
+</div>
 
-            <!-- Mobile Menu Button (Hamburger) -->
-            <button id="mobile-menu-button" class="md:hidden text-gray-800 focus:outline-none p-2 rounded-md">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">
+    <img src="img/img7.png" alt="AUWR">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sport">Sport</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#join">Contact</a></li>
+    <li><a href="https://auwr.co.nz/form/" target="_blank" class="nav-cta">Join Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-            <!-- Navigation Links (Desktop) -->
-            <nav class="hidden md:flex space-x-6 lg:space-x-8 items-center">
-                <a href="#hero" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300 ease-in-out">Home</a>
-                <a href="#club-overview-section" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300 ease-in-out">About</a>
-                <a href="#achievements-section" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300 ease-in-out">Achievements</a>
-                <a href="#join-us-section" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300 ease-in-out">Contact</a>
-                <a href="#join-us-section" class="ml-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105">Join Us</a>
-            </nav>
-        </div>
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div id="hero-bg"></div>
+  <canvas id="bubble-canvas"></canvas>
+  <div class="hero-overlay"></div>
+  <!-- Geometric overlays -->
+  <div class="hero-geo">
+    <div class="hero-geo-line" style="left:18%"></div>
+    <div class="hero-geo-line" style="left:82%"></div>
+    <div class="hero-geo-slash" style="left:32%"></div>
+    <div class="hero-geo-slash" style="left:68%; opacity:0.6;"></div>
+    <div class="hero-geo-bar" style="left:16%; width:320px; opacity:0.8;"></div>
+    <div class="hero-geo-bar" style="right:16%; width:260px; opacity:0.5;"></div>
+    <div class="hero-coord" style="top:28%; left:19%; transform:skewX(-8deg)">36°52'S / 174°45'E</div>
+    <div class="hero-coord" style="bottom:20%; right:10%; transform:skewX(-8deg)">AUCKLAND · NZ</div>
+    <div class="hero-coord" style="top:15%; right:19%; transform:skewX(-8deg)">EST. ~2010</div>
+    <div class="hero-coord" style="top:50%; left:5%; transform:skewX(-8deg) rotate(-90deg); transform-origin:left center; opacity:0.4;">AUWR — AUCKLAND UNDERWATER RUGBY</div>
+  </div>
+  <div class="hero-bottom-cut"></div>
+  <div class="hero-content">
+    <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
+      <img src="img/img2.png" alt="AUWR" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,180,255,0.4);box-shadow:0 0 30px rgba(0,180,255,0.25);">
+    </div>
+    <div class="hero-eyebrow">New Zealand's best competitive Underwater Rugby team</div>
+    <h1 class="hero-title">
+      <span class="line"><span class="word">Auckland</span></span>
+      <span class="line"><span class="word gradient-text">Underwater</span></span>
+      <span class="line"><span class="word">Rugby</span></span>
+    </h1>
+    <p class="hero-sub">Train hard. Breathe deep. Dominate the third dimension.</p>
+    <div class="hero-ctas">
+      <a href="https://auwr.co.nz/form/" target="_blank" class="btn-primary magnetic">
+        Join the Team
+      </a>
+      <a href="#sport" class="btn-secondary magnetic">
+        Discover the Sport
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint" id="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
 
-        <!-- Mobile Navigation Menu (Hidden by default) -->
-        <nav id="mobile-menu" class="md:hidden mt-4 bg-white rounded-lg shadow-inner hidden">
-            <a href="#hero" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition duration-300 ease-in-out">Home</a>
-            <a href="#club-overview-section" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition duration-300 ease-in-out">About</a>
-            <a href="#achievements-section" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition duration-300 ease-in-out">Achievements</a>
-            <a href="#join-us-section" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md transition duration-300 ease-in-out">Contact</a>
-            <a href="#join-us-section" class="block py-2 px-4 text-blue-600 hover:bg-blue-100 font-semibold rounded-md transition duration-300 ease-in-out">Join Us</a>
-        </nav>
-    </header>
-
-    <!-- Hero Section (image_65e3a3.jpg) -->
-    <section id="hero" class="hero-background relative h-screen flex items-center justify-center text-center text-white p-6 md:p-12 lg:p-20 rounded-b-lg">
-        <div class="hero-content relative z-10 max-w-4xl mx-auto">
-            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight mb-4 tracking-tight">
-                Auckland Underwater Rugby
-            </h1>
-            <p class="text-lg sm:text-xl lg:text-2xl font-light">
-                New Zealand’s best competitive Underwater Rugby team
-            </p>
-            <a href="https://auwr.co.nz/form/" target="_blank">
-            <button class="mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                Join Now
-            </button>
-            </a>
-        </div>
-    </section>
-
-    <!-- Club Overview Section (Replicated from image_65e3c1.jpg) -->
-    <section id="club-overview-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-100 mx-4 md:mx-auto mt-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center">
-            <!-- Logo and Introductory Text -->
-            <div class="mb-12 flex flex-col items-center">
-                <div class="flex flex-col items-center justify-center mb-6">
-                    <img src="img/img2.png" alt="AUWR Logo" class="h-48 w-48 rounded-full mb-4 object-cover">
-                </div>
-                <p class="text-lg sm:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
-                    We train hard, play harder, and always look out for each other.
-                    Underwater Rugby is more than a sport — it’s a challenge, a community, and a way to grow stronger together.
-                    Whether you want to compete internationally or just try something new, there’s space for you in the Auckland
-                    Underwater Rugby family.
-                </p>
-            </div>
-
-            <!-- The world's only 3D team sport Block -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row items-center md:space-x-10">
-                <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">The world's only 3D team sport</h3>
-                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-                        Underwater Rugby is a fast-paced, full-contact sport played in three dimensions — under the
-                        surface, around the goal, and through your limits. Two teams of six battle it out at the bottom
-                        of a deep pool, using breath control, strategy, and trust to score in weighted goals. It's
-                        intense, it's global, and it's unlike anything you've ever played.
-                    </p>
-                </div>
-                <div class="md:w-1/2 relative flex justify-center">
-                    <img src="images/image-19.jpeg" alt="Underwater Rugby Action with stats" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full">
-                    <!-- Text Overlay on Image for Stats (from original design) -->
-                    <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-3 rounded-lg flex justify-around items-center text-sm md:text-base">
-                        <div class="flex flex-col items-center">
-                            <span class="font-bold">+20</span>
-                            <span>Members</span>
-                        </div>
-                        <div class="flex flex-col items-center ml-4">
-                            <span class="font-bold">+15</span>
-                            <span>Years</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- We are a team in and out of the water Block -->
-<div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col-reverse md:flex-row items-end md:gap-x-12">
-  <!-- Imágenes alineadas abajo -->
-<div class="md:w-1/2 flex flex-col items-center md:items-end space-y-4 mb-8 md:mb-0 relative">
-  <img src="images/image-5.png" alt="Team bonding" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full mt-4 md:mt-0">
-  
-  <!-- Overlay de cita -->
-  <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-    <p class="italic">""White Free throw, GOALIEEEEEEEEE, THE BALL!!""</p>
-    <p class="text-right mt-2 font-semibold">- Fefe</p>
+<!-- ─── MARQUEE ─── -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span>Auckland Underwater Rugby</span><span class="dot">·</span>
+    <span>World's Only 3D Team Sport</span><span class="dot">·</span>
+    <span>Singapore UWR Open 2025 Champions</span><span class="dot">·</span>
+    <span>Steinfeld Cup 2024 Podium</span><span class="dot">·</span>
+    <span>Australia Nationals 2025</span><span class="dot">·</span>
+    <span>Train. Compete. Dominate.</span><span class="dot">·</span>
+    <span>Auckland Underwater Rugby</span><span class="dot">·</span>
+    <span>World's Only 3D Team Sport</span><span class="dot">·</span>
+    <span>Singapore UWR Open 2025 Champions</span><span class="dot">·</span>
+    <span>Steinfeld Cup 2024 Podium</span><span class="dot">·</span>
+    <span>Australia Nationals 2025</span><span class="dot">·</span>
+    <span>Train. Compete. Dominate.</span><span class="dot">·</span>
   </div>
 </div>
 
-  <!-- Texto con imagen debajo -->
-  <div class="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">We are a team in and out of the water</h3>
-    <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-      United by passion, discipline, and resilience, we play Underwater
-      Rugby with intensity and heart. Whether we're training, competing,
-      or just sharing a laugh, our bond extends beyond the pool. From
-      international tournaments to local matches, we push each other to
-      grow as athletes and as people.
-    </p>
-    <a href="https://auwr.co.nz/form/" target="_blank">
-      <button class="mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-        Join Us
-      </button>
+<!-- ─── SPORT INTRO ─── -->
+<section id="sport" class="angled-top">
+  <div class="section-full-bg" style="background-image:url('images/image-19.jpeg')"></div>
+  <div class="section-full-bg-overlay" style="background:linear-gradient(to right, rgba(4,8,15,0.3) 0%, transparent 60%, rgba(4,8,15,0.15) 100%)"></div>
+  <div class="sport-diag-accent"></div>
+  <div class="sport-full-layout">
+    <div class="sport-full-panel reveal-left">
+      <div class="sport-full-panel-inner">
+        <div class="section-label">The Sport</div>
+        <h2 class="section-title" style="font-size:clamp(2.4rem,5vw,4.2rem); margin-bottom:1.5rem;">The world's only<br><span class="gradient-text">3D team sport</span></h2>
+        <p class="section-body">Underwater Rugby is a fast-paced, full-contact sport played in three dimensions — under the surface, around the goal, and through your limits. Two teams of six battle it out at the bottom of a deep pool, using breath control, strategy, and trust.</p>
+        <p class="section-body" style="margin-top:1rem;">It's intense, it's global, and it's unlike anything you've ever played.</p>
+        <span class="diag-bar" style="margin-top:2rem;"></span>
+        <div class="stats-bar hud" style="margin-top:2rem;"><div class="hud-br"></div>
+          <div class="stat-item">
+            <span class="stat-num counter" data-target="6">0</span>
+            <span class="stat-label">Per Side</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num counter" data-target="2">0</span>
+            <span class="stat-label">Teams</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" style="font-size:clamp(1.4rem,3vw,2rem);">4–5m</span>
+            <span class="stat-label">Depth</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num counter" data-target="1">0</span>
+            <span class="stat-label">Ball</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sport-hud-overlay">
+      <div class="sport-badge">🏆 Singapore Open 2025 — 1st Place</div>
+      <div class="sport-hud-stats">
+        <div class="sport-hud-stat">
+          <span class="stat-num" style="font-size:1.6rem;">+20</span>
+          <span class="stat-label">Members</span>
+        </div>
+        <div class="sport-hud-stat">
+          <span class="stat-num" style="font-size:1.6rem;">+15yr</span>
+          <span class="stat-label">Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TEAM ─── -->
+<section id="team" class="angled-top-r">
+  <div class="section-full-bg" style="background-image:url('images/image-5.png'); background-position:60% center;"></div>
+  <div class="section-full-bg-overlay" style="background:linear-gradient(to left, rgba(4,8,15,0.25) 0%, transparent 40%, rgba(4,8,15,0.2) 100%)"></div>
+  <div class="fullscreen-layout align-right">
+    <div class="fullscreen-panel right reveal-right">
+      <div class="fullscreen-panel-inner">
+        <div class="split-marker"><div class="split-marker-dot"></div><div class="split-marker-line"></div></div>
+        <div class="section-label">Our Team</div>
+        <h2 class="section-title" style="font-size:clamp(2.4rem,5vw,4.2rem); margin-bottom:1.5rem;">A team in and<br>out of the water</h2>
+        <p class="section-body">United by passion, discipline, and resilience, we play Underwater Rugby with intensity and heart. Whether we're training, competing, or just sharing a laugh, our bond extends beyond the pool.</p>
+        <p class="section-body" style="margin-top:1rem;">From international tournaments to local matches, we push each other to grow as athletes and as people.</p>
+        <a href="https://auwr.co.nz/form/" target="_blank" class="btn-primary" style="display:inline-flex; margin-top:2.5rem;">Join Us →</a>
+      </div>
+    </div>
+    <div class="fullscreen-quote left">
+      <p class="quote-text">"White Free throw, GOALIEEEEEEEEE, THE BALL!!"</p>
+      <span class="quote-attr">— Fefe</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WOMEN'S TEAM ─── -->
+<section id="women" class="angled-top">
+  <div class="section-full-bg" style="background-image:url('images/image-15.png'); background-position:40% center;"></div>
+  <div class="section-full-bg-overlay" style="background:linear-gradient(to right, rgba(4,8,15,0.25) 0%, transparent 40%, rgba(4,8,15,0.2) 100%)"></div>
+  <div class="fullscreen-layout">
+    <div class="fullscreen-panel left reveal-left">
+      <div class="fullscreen-panel-inner">
+        <div class="split-marker"><div class="split-marker-dot"></div><div class="split-marker-line"></div></div>
+        <div class="section-label">Women's Team</div>
+        <h2 class="section-title" style="font-size:clamp(2.4rem,5vw,4.2rem); margin-bottom:1.5rem;">Our<br><span class="gradient-text">Women's Team</span></h2>
+        <p class="section-body">We are proud to have a strong and growing women's team. Our female players bring agility, determination, and fierce teamwork to every training session and competition.</p>
+        <p class="section-body" style="margin-top:1rem;">We would love to build a competitive women's squad to participate in women's-only tournaments. Come be part of something powerful.</p>
+        <a href="https://auwr.co.nz/form/" target="_blank" class="btn-primary" style="display:inline-flex; margin-top:2.5rem;">Join Our Girls →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ACHIEVEMENTS ─── -->
+<section id="achievements" class="angled-top-r">
+  <div class="achievements-header-bar reveal">
+    <div>
+      <div class="section-label">Results</div>
+      <h2 class="section-title">Our Achievements</h2>
+    </div>
+    <p>Competing across New Zealand, Australia, Asia, and Europe — we show up and perform.</p>
+  </div>
+  <div class="achievement-shards">
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/photos/ChampionsCup.jpg')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">01</div>
+      <span class="ac-shard-badge coming">Coming Soon</span>
+      <div class="ac-shard-label">Champions Cup 2026</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/de.png" alt="Germany"><span>Germany · 2026</span></div>
+        <div class="ac-shard-title">Champions Cup 2026</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/photos/NATIONALS.jpg')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">02</div>
+      <span class="ac-shard-badge bronze">🥉 3rd Place</span>
+      <div class="ac-shard-label">Australia Nationals 2026</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/au.png" alt="Australia"><span>Australia · 2026</span></div>
+        <div class="ac-shard-title">Australia Nationals 2026</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/image-18.jpeg')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">03</div>
+      <span class="ac-shard-badge gold">🥇 1st Place</span>
+      <div class="ac-shard-label">Singapore UWR Open 2025</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/sg.png" alt="Singapore"><span>Singapore · 2025</span></div>
+        <div class="ac-shard-title">Singapore UWR Open 2025</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/image-16.png')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">04</div>
+      <span class="ac-shard-badge blue">Female Team</span>
+      <div class="ac-shard-label">Brisbane Barbarians 2025</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/au.png" alt="Australia"><span>Australia · 2025</span></div>
+        <div class="ac-shard-title">Brisbane Barbarians 2025</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/image-12.png')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">05</div>
+      <span class="ac-shard-badge blue">5th Place</span>
+      <div class="ac-shard-label">Australia Nationals 2025</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/au.png" alt="Australia"><span>Australia · 2025</span></div>
+        <div class="ac-shard-title">Australia Nationals 2025</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/image-6.png')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">06</div>
+      <span class="ac-shard-badge bronze">🥉 3rd Place</span>
+      <div class="ac-shard-label">Steinfeld Cup 2024</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/au.png" alt="Australia"><span>Australia · 2024</span></div>
+        <div class="ac-shard-title">Steinfeld Cup 2024</div>
+      </div>
+    </div>
+
+    <div class="ac-shard">
+      <div class="ac-shard-bg" style="background-image:url('images/image-7.png')"></div>
+      <div class="ac-shard-accent"></div>
+      <div class="ac-shard-num">07</div>
+      <span class="ac-shard-badge blue">Training Camp</span>
+      <div class="ac-shard-label">Brisbane Training Camp 2024</div>
+      <div class="ac-shard-content">
+        <div class="ac-shard-flag"><img src="https://flagcdn.com/w40/au.png" alt="Australia"><span>Australia · 2024</span></div>
+        <div class="ac-shard-title">Brisbane Training Camp 2024</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── LIGHTBOX ─── -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button id="lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <button id="lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<!-- ─── GALLERY ─── -->
+<section id="gallery">
+  <div class="gallery-header-overlay">
+    <div class="section-label">Gallery</div>
+    <h2 class="section-title" style="font-size:clamp(2rem,5vw,4rem); margin-top:0.5rem;">Life at AUWR</h2>
+  </div>
+  <div class="gallery-ticker">
+    <div class="gallery-row" id="ticker-row-0"></div>
+    <div class="gallery-row right" id="ticker-row-1"></div>
+    <div class="gallery-row" id="ticker-row-2"></div>
+    <div class="gallery-row right" id="ticker-row-3"></div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="about-header-wrap reveal">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-title">About AUWR</h2>
+  </div>
+  <div class="shards-container">
+
+    <div class="shard" id="shard-0">
+      <div class="shard-bg" style="background-image:url('images/image-4.png')"></div>
+      <div class="shard-accent"></div>
+      <div class="shard-num">01</div>
+      <div class="shard-content">
+        <span class="shard-tag">Origins</span>
+        <h3 class="shard-title">How It Started</h3>
+        <p class="shard-text">A small group of passionate players wanting to bring something different to the water. Over the years, a diverse international community of athletes who meet weekly to train, compete, and have fun.</p>
+        <div class="shard-quote">
+          <p>"Breath In, Breath Out. Let your body do what your body is capable of doing"</p>
+          <span>— Wim Hof (Indirect Team Breathing Coach)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shard" id="shard-1">
+      <div class="shard-bg" style="background-image:url('images/image-10.png')"></div>
+      <div class="shard-accent"></div>
+      <div class="shard-num">02</div>
+      <div class="shard-content">
+        <span class="shard-tag">Training</span>
+        <h3 class="shard-title">What We're About</h3>
+        <p class="shard-text">We train twice a week, compete nationally and internationally, and welcome all levels. Beginner or elite — you'll find support, laughs, and serious gameplay.</p>
+        <div class="shard-quote">
+          <p>"You know, Concussions"</p>
+          <span>— Terry</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shard" id="shard-2">
+      <div class="shard-bg" style="background-image:url('images/image-8.png')"></div>
+      <div class="shard-accent"></div>
+      <div class="shard-num">03</div>
+      <div class="shard-content">
+        <span class="shard-tag">Culture</span>
+        <h3 class="shard-title">The AUWR Spirit</h3>
+        <p class="shard-text">We take our game seriously — but never ourselves. Late-night memes, sideline banter, shared rides to comps. Here to win, but more importantly, to grow as a team and as people.</p>
+        <div class="shard-quote">
+          <p>"It is normal to feel pain with the fins, what is not normal is to complain that much, Ricardo"</p>
+          <span>— Callum</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shard" id="shard-3">
+      <div class="shard-bg" style="background-image:url('images/image-12.png')"></div>
+      <div class="shard-accent"></div>
+      <div class="shard-num">04</div>
+      <div class="shard-content">
+        <span class="shard-tag">Join</span>
+        <h3 class="shard-title">Wanna Try?</h3>
+        <p class="shard-text">No experience needed — just bring fins, a mask, and a sense of adventure. We're always looking for new players. Our community will take care of the rest.</p>
+        <div class="shard-quote">
+          <p>"2 words: Hokey Pokey"</p>
+          <span>— Jango</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── VIDEO ─── -->
+<section id="video-section">
+  <div class="container" style="text-align: center;">
+    <div class="section-label" style="justify-content: center;">Latest Session</div>
+    <h2 class="section-title reveal">Check our latest<br>training session</h2>
+    <div class="video-wrap reveal">
+      <a href="https://youtu.be/Ez_NwjngTX8" target="_blank" rel="noopener noreferrer" class="video-thumb-link" aria-label="Watch on YouTube">
+        <img src="https://img.youtube.com/vi/Ez_NwjngTX8/maxresdefault.jpg" alt="AUWR Training Session" class="video-thumb-img" onerror="this.src='https://img.youtube.com/vi/Ez_NwjngTX8/hqdefault.jpg'">
+        <div class="video-thumb-overlay">
+          <div class="video-play-btn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="video-thumb-label">Watch on YouTube</span>
+        </div>
+      </a>
+    </div>
+    <a href="https://www.youtube.com/@AucklandUnderwaterRugby" target="_blank" rel="noopener noreferrer"
+       class="btn-secondary" style="display: inline-flex; margin-top: 2rem;">
+      📺 More on YouTube
     </a>
-    <img src="img/img3.png" alt="Team social event" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full mt-4">
   </div>
-</div>
+</section>
 
- <!-- Female Team -->
-<div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col-reverse md:flex-row items-center md:gap-x-12">
-  <!-- Imágenes alineadas abajo -->
-
-
-  <!-- Texto con imagen debajo -->
-  <div class="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">Our Women’s Team</h3>
-    <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-     We are proud to have a strong and growing women's team. Our female players bring agility, determination, and fierce teamwork to every training session and competition.
-     </p>
-     <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-     Although it is great fun playing as a mixed team, we would love to put together a competitive women’s team so that we can participate in women’s only tournaments
-    </p>
-    <a href="https://auwr.co.nz/form/" target="_blank" rel="noopener noreferrer">
-      <button class="mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-        Join Our Girls
-      </button>
-    </a>
-     <!--<img src="images/image-00.png" alt="Team social event" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full mt-4">-->
+<!-- ─── COMMUNITY APP ─── -->
+<section id="app-section">
+  <div class="app-section-inner">
+    <div class="app-left reveal">
+      <div class="coming-soon-badge">Coming Soon</div>
+      <h2 class="app-tagline">One app.<br>One <span>team</span>.</h2>
+      <p class="app-desc">A custom-built app for the AUWR community — training, tournaments, photos, and team announcements. Made by players, for players.</p>
+      <div class="app-members">
+        <div class="app-photos">
+          <img src="images/image-0.png" alt="Member">
+          <img src="img/img6.png" alt="Member">
+          <img src="images/image-1.png" alt="Member">
+          <img src="img/img5.png" alt="Member">
+          <img src="img/img4.png" alt="Member">
+        </div>
+        <div class="app-member-label">
+          <strong>20+ members</strong>
+          already waiting
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="md:w-1/2 flex flex-col items-center md:items-end space-y-4 mb-8 md:mb-0 relative">
-  <img src="images/image-15.png" alt="Team bonding" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full mt-4 md:mt-0">
-  
-  <!-- Overlay de cita -->
-  <!--<div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-   <p class="italic">""White Free throw, GOALIEEEEEEEEE, THE BALL!!""</p>
-    <p class="text-right mt-2 font-semibold">- Fefe</p>
-  </div>-->
-</div>
-</div>
+</section>
 
-    </section>
-
-    <!-- Our Achievements Section (Replicated from image_65e669.jpg) -->
-    <section id="achievements-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-100 mx-4 md:mx-auto mt-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-12">
-                Our Achievements
-            </h2>
-            
-            <!-- Achievement Cards with Images -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <!-- Achievement 1 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="images/image-6.png" alt="Steinfeld Cup 2024 Team" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Steinfeld Cup 2024</h3>
-                        <p class="text-blue-600 font-bold text-lg">3rd Place</p>
-                        <div class="flex justify-center mt-4">
-                        <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag" class="w-6 h-4 rounded-sm shadow-sm">
-                        </div>
-                    </div>
-                </div>
-                <!-- Achievement 2 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="images/image-7.png" alt="Brisbane Training Camp 2024" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Brisbane Training Camp 2024</h3>
-                         <div class="flex justify-center mt-4">
-                        <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag" class="w-6 h-4 rounded-sm shadow-sm">
-                        </div>
-                    </div>
-                </div>
-                <!-- Achievement 3 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="images/image-12.png" alt="Australia Nationals 2025 Team" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Australia Nationals 2025</h3>
-                        <p class="text-blue-600 font-bold text-lg">5th Place</p>
-                         <div class="flex justify-center mt-4">
-                        <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag" class="w-6 h-4 rounded-sm shadow-sm">
-                        </div>
-                    </div>
-                </div>
-            </div>
-             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <!-- Achievement 4 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="images/image-16.png" alt="Steinfeld Cup 2024 Team" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Brisbane Barbarians 2025</h3>
-                        <p class="text-blue-600 font-bold text-lg">Female Team</p>
-                        <div class="flex justify-center mt-4">
-                        <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag" class="w-6 h-4 rounded-sm shadow-sm">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Achievement 5 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="images/image-18.jpeg" alt="Steinfeld Cup 2024 Team" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Singapore UWR Open 2025</h3>
-                        <p class="text-blue-600 font-bold text-lg">1st Place</p>
-                        <div class="flex justify-center mt-4">
-                        <img src="https://flagcdn.com/w40/sg.png" alt="Australia Flag" class="w-6 h-4 rounded-sm shadow-sm">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Game Statistics Section -->
-            <div class="bg-gray-800 text-white p-8 rounded-xl shadow-lg flex flex-col sm:flex-row justify-around items-center space-y-6 sm:space-y-0 sm:space-x-8">
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl sm:text-5xl font-extrabold">6</span>
-                    <span class="text-base sm:text-lg">in the water</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl sm:text-5xl font-extrabold">2</span>
-                    <span class="text-base sm:text-lg">teams</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl sm:text-5xl font-extrabold">4-5m</span>
-                    <span class="text-base sm:text-lg">depth</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl sm:text-5xl font-extrabold">1</span>
-                    <span class="text-base sm:text-lg">ball</span>
-                </div>
-            </div>
+<!-- ─── JOIN ─── -->
+<section id="join" class="angled-top" style="min-height:100vh; display:flex; align-items:center;">
+  <div class="join-bg"></div>
+  <div class="join-bg-overlay"></div>
+  <div class="container" style="position:relative; z-index:1; width:100%; padding-top:4rem; padding-bottom:4rem;">
+    <div class="join-grid">
+      <div class="reveal-left">
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title">Ready to join<br>the team?</h2>
+        <p class="section-body" style="margin-bottom: 3rem;">
+          Whether you're an experienced player, a curious swimmer, or just want to try something new — you're welcome at Auckland Underwater Rugby.
+        </p>
+        <div class="join-info-item">
+          <div class="join-info-icon">✉️</div>
+          <div class="join-info-content">
+            <h4>Email</h4>
+            <a href="mailto:contact@auwr.co.nz">contact@auwr.co.nz</a>
+          </div>
         </div>
-    </section>
-
-    <!-- About Us / History Section (Replicated from image_65e684.jpg) -->
-    <section id="about-us-history-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-100 mx-4 md:mx-auto mt-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-10">
-                About Us
-            </h2>
-
-            <!-- How It Started Block -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row items-center md:space-x-10">
-                <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">How It Started</h3>
-                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
-                        Founded in Auckland, AUWR began as a small group of passionate players wanting to bring
-                        something different to the water. Over the years, we've grown into a diverse, international
-                        community of athletes who meet weekly to train, compete, and have fun.
-                    </p>
-                </div>
-                <div class="md:w-1/2 flex justify-center relative">
-                    <img src="images/image-4.png" alt="How it started image" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full">
-                    <!-- Overlay de cita -->
-  <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-    <p class="italic">"Breath In, Breath Out. Let your body do what your body is capable of doing"</p>
-    <p class="text-right mt-2 font-semibold">- Wim Hof (Indirect Team Breathing Coach)</p>
+        <div class="join-info-item">
+          <div class="join-info-icon">🕐</div>
+          <div class="join-info-content">
+            <h4>Training Schedule</h4>
+            <p>Wednesday 8pm &amp; Sunday 5pm</p>
+          </div>
+        </div>
+        <div class="join-info-item">
+          <div class="join-info-icon">📍</div>
+          <div class="join-info-content">
+            <h4>Location</h4>
+            <p>Glenfield Pool and Leisure Centre<br>73-77 Bentley Ave, Glenfield, Auckland 0629</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <form action="https://formsubmit.co/contact@auwr.co.nz" method="POST"
+              style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 2.5rem;">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_subject" value="New Submission from AUWR Website">
+          <input type="hidden" name="_template" value="table">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required placeholder="Tell us about yourself..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Message</button>
+        </form>
+      </div>
+    </div>
   </div>
-                </div>
-            </div>
+</section>
 
-            <!-- What We're About Block -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row-reverse items-center md:space-x-reverse md:space-x-10">
-                <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">What We're About</h3>
-                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
-                        We train twice a week, participate in national and international tournaments, and welcome
-                        players of all levels. Whether you're a total beginner or an experienced athlete, you'll
-                        find support, laughs, and serious gameplay in our sessions.
-                    </p>
-                </div>
-                <div class="md:w-1/2 flex justify-center relative">
-                    <img src="images/image-10.png" alt="What we're about image" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full">
-                  <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-                    <p class="italic">"You know, Concussions"</p>
-                    <p class="text-right mt-2 font-semibold">- Terry</p>
-                </div>
-                </div>
-            </div>
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="form/assets/logo-auwr.png" alt="AUWR Logo">
+      <p>Auckland Underwater Rugby — New Zealand's premier competitive UWR club. Train hard, breathe deep, and dominate the third dimension.</p>
+      <p style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.85rem;">No spam. Just vibes and bubbles.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/auckland.uwr/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/auwrnz/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@AucklandUnderwaterRugby" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <a href="#sport">The Sport</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#about">About Us</a>
+      <a href="#join">Join Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="mailto:contact@auwr.co.nz">contact@auwr.co.nz</a>
+      <a href="https://auwr.co.nz/form/" target="_blank">Join Form</a>
+      <a href="https://auwr.co.nz/linktree/" target="_blank">Linktree</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Auckland Underwater Rugby. All rights reserved.</p>
+    <a href="mailto:contact@auwr.co.nz">contact@auwr.co.nz</a>
+  </div>
+</footer>
 
-            <!-- The AUWR Spirit Block -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row items-center md:space-x-10">
-                <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">The AUWR Spirit</h3>
-                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
-                        We take our game seriously — but never ourselves. Expect late-night memes, sideline banter,
-                        and shared rides to comps. We're here to win, but more importantly, to grow as a team and as people.
-                    </p>
-                </div>
-                <div class="md:w-1/2 flex justify-center relative">
-                    <img src="images/image-8.png" alt="AUWR Spirit image" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full">
-                                  <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-                    <p class="italic">"It is normal to feel pain with the fins, what is not normal is to complain that much, Ricardo"</p>
-                    <p class="text-right mt-2 font-semibold">– Callum</p>
-                </div>
-            </div>
-            </div>
-            
-            <!-- Wanna Try? Block (from original design, but will be simplified as Join Us has the form) -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col md:flex-row-reverse items-center md:space-x-reverse md:space-x-10">
-                <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">Wanna Try?</h3>
-                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
-                        We're always looking for new players! No experience needed — just bring fins, a mask, and a
-                        sense of adventure. Our community will take care of the rest.
-                    </p>
-                    <a href="https://auwr.co.nz/form/" target="_blank">
-                    <button class="mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                        Join Us
-                    </button>
-                    </a>
-                </div>
-                <div class="md:w-1/2 flex justify-center relative">
-                    <img src="images/image-12.png" alt="Wanna try image" class="w-full h-auto rounded-xl shadow-md object-cover max-w-sm md:max-w-full">
-                                  <div class="absolute top-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-lg text-sm md:text-base shadow-lg">
-                    <p class="italic">"2 words, Hokey Pokey"</p>
-                    <p class="text-right mt-2 font-semibold">- Jango</p>
-                </div>
-            </div>
-            </div>
-        </div>
-    </section>
+<script>
+  // ─── NAVBAR SCROLL ───
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
 
-    <!-- Join Us Section (Replicated from image_65e6a6.png) -->
-        <section id="join-us-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-100 mx-4 md:mx-auto mt-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center md:text-left">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-10">
-            Join Us
-            </h2>
-            <div class="flex flex-col md:flex-row md:space-x-12 items-center md:items-start">
-            <!-- Form Section -->
-            <div class="bg-white p-8 rounded-xl shadow-lg w-full md:w-1/2 mb-10 md:mb-0">
-                <form action="https://formsubmit.co/contact@auwr.co.nz" method="POST">
-                <!-- Hidden fields for configuration -->
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_subject" value="New Submission from AUWR Website">
-                <input type="hidden" name="_template" value="table">
+  // ─── MOBILE MENU ───
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  }
 
-                <div class="mb-6">
-                    <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Your Name</label>
-                    <input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" placeholder="Enter your name">
-                </div>
-                <div class="mb-6">
-                    <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Your Email</label>
-                    <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" placeholder="Enter your email">
-                </div>
-                <div class="mb-6">
-                    <label for="message" class="block text-gray-700 text-sm font-semibold mb-2">Message</label>
-                    <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" placeholder="Tell us about yourself..."></textarea>
-                </div>
-                <button type="submit" class="w-full px-8 py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                    Submit
-                </button>
-                </form>
-            </div>
+  // ─── BUBBLE CANVAS ───
+  (function() {
+    const canvas = document.getElementById('bubble-canvas');
+    const ctx = canvas.getContext('2d');
+    let bubbles = [];
+    let W, H;
 
-            <!-- Text and Contact Info Section -->
-            <div class="w-full md:w-1/2 flex flex-col items-center md:items-start">
-                <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">
-                Ready to join the team?
-                </h3>
-                <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-6 text-center md:text-left">
-                Whether you're an experienced player, a curious swimmer, or just want to try something new — you're welcome at Auckland Underwater Rugby. We train weekly, compete across New Zealand and Australia, and have a community that thrives both in and out of the water.
-                </p>
-                <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 text-center md:text-left">
-                No experience? No problem. Just bring your fins, a snorkel, and an open mind. We'll take care of the rest.
-                </p>
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
 
-                <div class="flex flex-col items-center md:items-start space-y-4 text-gray-700">
-                <div class="flex items-center">
-                    <i class="fas fa-envelope text-blue-600 mr-3 text-xl"></i>
-                    <a href="mailto:contact@auwr.co.nz" class="hover:text-blue-600 transition duration-300">contact@auwr.co.nz</a>
-                </div>
-                <div class="flex items-center">
-                    <i class="fas fa-calendar-alt text-blue-600 mr-3 text-xl"></i>
-                    <span>Wednesday 8pm | Sunday 5pm</span>
-                </div>
-                <div class="flex items-center text-left">
-                    <i class="fas fa-map-marker-alt text-blue-600 mr-3 text-xl flex-shrink-0"></i>
-                    <span>Glenfield Pool and Leisure Centre<br>73-77 Bentley Avenue, Glenfield<br>Auckland 0629</span>
-                </div>
-                </div>
-            </div>
-            </div>
-        </div>
-        </section>
+    class Bubble {
+      constructor() { this.reset(true); }
+      reset(init) {
+        this.x = Math.random() * W;
+        this.y = init ? Math.random() * H : H + 20;
+        this.r = Math.random() * 6 + 2;
+        this.speed = Math.random() * 0.8 + 0.3;
+        this.opacity = Math.random() * 0.25 + 0.05;
+        this.wobble = Math.random() * Math.PI * 2;
+        this.wobbleSpeed = (Math.random() - 0.5) * 0.03;
+      }
+      update() {
+        this.y -= this.speed;
+        this.wobble += this.wobbleSpeed;
+        this.x += Math.sin(this.wobble) * 0.4;
+        if (this.y + this.r < 0) this.reset(false);
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0, 180, 255, ${this.opacity})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(this.x - this.r * 0.3, this.y - this.r * 0.3, this.r * 0.25, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.8})`;
+        ctx.fill();
+      }
+    }
 
- <!-- Video) -->
-    <section id="community-app-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-50 mx-4 md:mx-auto mt-8 mb-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
-                Check our latest training session!
-            </h2>
+    for (let i = 0; i < 70; i++) bubbles.push(new Bubble());
 
-<div class="relative w-full max-w-4xl mx-auto mb-8" style="aspect-ratio: 16 / 9;">
-  <iframe
-    class="w-full h-full rounded-lg shadow-md"
-    src="https://www.youtube.com/embed/LkHGEG-lPwE"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-  </iframe>
-</div>
-<a href="https://www.youtube.com/@AucklandUnderwaterRugby" target="_blank" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
-    <i class="fab fa-youtube"></i>
-</a>
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      bubbles.forEach(b => { b.update(); b.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+
+  // ─── GSAP ANIMATIONS ───
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero entrance
+  const tl = gsap.timeline({ delay: 0.2 });
+  tl.to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+    .to('.hero-title .word', {
+      y: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: 'power4.out'
+    }, '-=0.4')
+    .to('.hero-sub', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+    .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+    .to('#scroll-hint', { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.2');
+
+  // Hero BG parallax
+  gsap.to('#hero-bg', {
+    yPercent: 25,
+    ease: 'none',
+    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+  });
+
+  // Full-screen section BG parallax
+  document.querySelectorAll('.section-full-bg').forEach(bg => {
+    const section = bg.closest('section');
+    gsap.fromTo(bg,
+      { yPercent: -12 },
+      {
+        yPercent: 12,
+        ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+      }
+    );
+  });
+
+  // Reveal elements
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    });
+  });
+  gsap.utils.toArray('.reveal-left').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    });
+  });
+  gsap.utils.toArray('.reveal-right').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    });
+  });
+  gsap.utils.toArray('.reveal-scale').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out',
+      delay: (i % 3) * 0.1,
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    });
+  });
+
+  // Counter animation
+  function animateCounter(el, target) {
+    let current = 0;
+    const duration = 1500;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.round(current);
+      if (current >= target) clearInterval(timer);
+    }, 16);
+  }
+
+  const counters = document.querySelectorAll('.counter');
+  counters.forEach(counter => {
+    const target = parseInt(counter.dataset.target);
+    ScrollTrigger.create({
+      trigger: counter,
+      start: 'top 90%',
+      onEnter: () => animateCounter(counter, target),
+      once: true
+    });
+  });
+
+  // ─── LIGHTBOX ───
+  const galleryImages = [
+    { src: 'images/photos/20260517_131602.jpg',                          label: 'Training 2026' },
+    { src: 'images/image-8.png',                                         label: 'AUWR Spirit' },
+    { src: 'images/photos/FullSizeRender.jpg',                           label: 'Team' },
+    { src: 'images/photos/IMG_5513.jpg',                                 label: 'Action' },
+    { src: 'images/image-10.png',                                        label: 'Training' },
+    { src: 'images/photos/20260517_130509.jpg',                          label: 'Session 2026' },
+    { src: 'images/image-13.png',                                        label: 'Competition' },
+    { src: 'images/photos/IMG_1879.jpg',                                 label: 'Team' },
+    { src: 'images/photos/FullSizeRender--1-.jpg',                       label: 'Training' },
+    { src: 'images/image-19.jpeg',                                       label: 'Match' },
+    { src: 'images/photos/20260517_130850-1-.jpg',                       label: 'Session 2026' },
+    { src: 'images/image-15.png',                                        label: "Women's Team" },
+    { src: 'images/photos/974e1d53-289a-4052-82b0-0628d506c396.jpg',     label: 'Team' },
+    { src: 'images/image-11.png',                                        label: 'Team' },
+    { src: 'images/photos/e7e0e2b4-5801-4f35-a2b2-6de2b4b10724.jpg',    label: 'Team' },
+    { src: 'images/image-18.jpeg',                                       label: 'Singapore 2025' },
+    { src: 'images/photos/IMG_5504.jpg',                                 label: 'Training' },
+    { src: 'images/photos/FullSizeRender2.jpg',                          label: 'Team' },
+    { src: 'images/photos/20260517_125841.jpg',                          label: 'Session 2026' },
+    { src: 'img/img3.png',                                               label: 'Off the Water' },
+    { src: 'images/photos/NATIONALS.jpg',                                label: 'Nationals 2026' },
+    { src: 'images/image-5.png',                                         label: 'Team' },
+  ];
+  let lightboxIndex = 0;
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+
+  function openLightbox(i) {
+    lightboxIndex = i;
+    lbImg.src = galleryImages[i].src;
+    lbImg.alt = galleryImages[i].label;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function lightboxNav(dir) {
+    lightboxIndex = (lightboxIndex + dir + galleryImages.length) % galleryImages.length;
+    lbImg.src = galleryImages[lightboxIndex].src;
+    lbImg.alt = galleryImages[lightboxIndex].label;
+  }
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  });
+
+  // ─── GALLERY TICKER BUILDER ───
+  const rowOrders = [
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
+    [11,4,17,0,21,8,15,3,19,6,12,1,20,9,16,2,13,7,18,5,14,10],
+    [5,18,1,12,7,20,2,9,16,3,11,6,0,17,10,4,21,8,13,19,14,15],
+    [19,8,13,2,16,0,9,21,5,11,17,3,12,18,6,14,1,20,10,7,15,4]
+  ];
+  rowOrders.forEach((order, ri) => {
+    const row = document.getElementById(`ticker-row-${ri}`);
+    const track = document.createElement('div');
+    track.className = 'gallery-row-track';
+    [...order, ...order].forEach(idx => {
+      const img = galleryImages[idx];
+      const item = document.createElement('div');
+      item.className = 'ticker-item';
+      item.onclick = () => openLightbox(idx);
+      item.innerHTML = `<img src="${img.src}" alt="${img.label}" loading="lazy"><div class="ticker-item-overlay"><span>${img.label}</span></div>`;
+      track.appendChild(item);
+    });
+    row.appendChild(track);
+  });
 
 
-    </section>
-    <!-- Our Underwater Rugby Community App Section (Replicated from image_65e6ac.png) -->
-    <section id="community-app-section" class="py-16 px-6 md:px-12 lg:px-20 bg-gray-50 mx-4 md:mx-auto mt-8 mb-8 max-w-6xl rounded-lg shadow-md">
-        <div class="container mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
-                Our Underwater Rugby Community App
-            </h2>
-            <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 max-w-4xl mx-auto">
-                Our custom-built community app helps players manage training attendance, track tournaments, get match photos, and stay in the loop — whether you're in Auckland or traveling to comps.
-            </p>
-            <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 max-w-4xl mx-auto">
-                From team announcements to post-game memes, everything you need is in one place.
-            </p>
-            <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-12 font-semibold">
-                Made by players, for players.
-            </p>
+  // ─── ACHIEVEMENT SHARD CLICK-TO-EXPAND ───
+  const acShards = document.querySelectorAll('.ac-shard');
+  acShards.forEach(shard => {
+    shard.addEventListener('click', () => {
+      const isActive = shard.classList.contains('active');
+      acShards.forEach(s => s.classList.remove('active'));
+      if (!isActive) shard.classList.add('active');
+    });
+  });
 
-            <p class="text-2xl font-bold text-blue-600 mb-8">Coming Soon</p>
+  // ─── SHARD PARALLAX (About + Achievements) ───
+  document.querySelectorAll('.shard, .ac-shard').forEach(shard => {
+    const bg = shard.querySelector('.shard-bg, .ac-shard-bg');
+    if (!bg) return;
+    const moveX = gsap.quickTo(bg, 'x', { duration: 0.6, ease: 'power2.out' });
+    const moveY = gsap.quickTo(bg, 'y', { duration: 0.6, ease: 'power2.out' });
 
-            <div class="flex justify-center -space-x-6 circular-image-group">
-                <img src="images/image-0.png" alt="App Screenshot 1" class="circular-image">
-                <img src="img/img6.png" alt="App Screenshot 2" class="circular-image">
-                <img src="images/image-1.png" alt="App Screenshot 3" class="circular-image">
-                <img src="img/img5.png" alt="App Screenshot 4" class="circular-image">
-                <img src="img/img4.png" alt="App Screenshot 5" class="circular-image">
-            </div>
-        </div>
-    </section>
+    shard.addEventListener('mousemove', e => {
+      const r = shard.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      moveX(x * 22);
+      moveY(y * 16);
+    });
+    shard.addEventListener('mouseleave', () => {
+      moveX(0); moveY(0);
+    });
+  });
 
+  // ─── SHARD SCROLL ENTRANCE ───
+  gsap.from('.shard', {
+    opacity: 0, y: 60, stagger: 0.1, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: '.shards-container', start: 'top 85%', once: true }
+  });
 
-    <!-- Footer Section (Replicated from image_65e6e2.png) -->
-    <footer id="contact-section" class="bg-gray-900 text-white py-16 px-6 md:px-12 lg:px-20 rounded-t-lg mx-4 md:mx-auto mt-8 max-w-6xl shadow-md">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <div class="mb-8 md:mb-0 flex flex-col items-center md:items-start">
-                <img src="images/image-2.png" alt="AUWR Logo White" class="h-24 w-24 mb-4 object-contain">
-                <h3 class="text-2xl font-bold mb-2">Stay connected with AUWR.</h3>
-                <p class="text-sm text-gray-400 mb-4 max-w-xs md:max-w-none">
-                    Follow us on social media for game highlights, training schedules, team memes, and more underwater chaos.
-                </p>
-                <p class="text-sm text-gray-400">No spam. Just vibes and bubbles.</p>
-            </div>
+  // ─── Magnetic buttons
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.4, ease: 'power2.out' });
+    });
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+    });
+  });
 
-            <div class="flex flex-col space-y-2 mb-8 md:mb-0">
-                <a href="#club-overview-section" class="text-gray-400 hover:text-white transition duration-300">About</a>
-                <a href="#achievements-section" class="text-gray-400 hover:text-white transition duration-300">Our Achievements</a>
-                <a href="#join-us-section" class="text-gray-400 hover:text-white transition duration-300">Join Us</a>
-            </div>
-                <div class="flex space-x-6">
-                    <a href="https://www.instagram.com/auckland.uwr/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://www.facebook.com/auwrnz/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://www.youtube.com/@AucklandUnderwaterRugby" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-        </div>
-        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2024 Auckland Underwater Rugby. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- JavaScript for Mobile Menu Toggle -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
-
-                // Close menu when a link is clicked
-                mobileMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.add('hidden');
-                    });
-                });
-            }
-        });
-    </script>
+  // Section title stagger reveal (sport/team)
+  gsap.utils.toArray('.section-title').forEach(el => {
+    gsap.from(el, {
+      opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    });
+  });
+</script>
 </body>
 </html>
