@@ -259,7 +259,7 @@
       text-decoration: none;
       border: none;
       cursor: pointer;
-      transition: box-shadow 0.3s, transform 0.2s;
+      transition: box-shadow 0.12s, transform 0.12s;
       letter-spacing: 0.02em;
     }
     .btn-primary:hover {
@@ -279,7 +279,7 @@
       text-decoration: none;
       border: 1.5px solid var(--border);
       cursor: pointer;
-      transition: border-color 0.3s, color 0.3s, transform 0.2s;
+      transition: border-color 0.12s, color 0.12s, transform 0.12s;
     }
     .btn-secondary:hover {
       border-color: var(--accent-blue);
@@ -1049,7 +1049,7 @@
       border: none;
       border-radius: 0.6rem;
       cursor: pointer;
-      transition: box-shadow 0.3s, transform 0.2s;
+      transition: box-shadow 0.12s, transform 0.12s;
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
@@ -1924,23 +1924,6 @@
   </div>
 </section>
 
-<!-- ─── MARQUEE ─── -->
-<div class="marquee-section">
-  <div class="marquee-track">
-    <span>Auckland Underwater Rugby</span><span class="dot">·</span>
-    <span>World's Only 3D Team Sport</span><span class="dot">·</span>
-    <span>Singapore UWR Open 2025 Champions</span><span class="dot">·</span>
-    <span>Steinfeld Cup 2024 Podium</span><span class="dot">·</span>
-    <span>Australia Nationals 2025</span><span class="dot">·</span>
-    <span>Train. Compete. Dominate.</span><span class="dot">·</span>
-    <span>Auckland Underwater Rugby</span><span class="dot">·</span>
-    <span>World's Only 3D Team Sport</span><span class="dot">·</span>
-    <span>Singapore UWR Open 2025 Champions</span><span class="dot">·</span>
-    <span>Steinfeld Cup 2024 Podium</span><span class="dot">·</span>
-    <span>Australia Nationals 2025</span><span class="dot">·</span>
-    <span>Train. Compete. Dominate.</span><span class="dot">·</span>
-  </div>
-</div>
 
 <!-- ─── SPORT INTRO ─── -->
 <section id="sport" class="angled-top">
@@ -2003,7 +1986,10 @@
         <h2 class="section-title" style="font-size:clamp(2.4rem,5vw,4.2rem); margin-bottom:1.5rem;">A team in and<br>out of the water</h2>
         <p class="section-body">United by passion, discipline, and resilience, we play Underwater Rugby with intensity and heart. Whether we're training, competing, or just sharing a laugh, our bond extends beyond the pool.</p>
         <p class="section-body" style="margin-top:1rem;">From international tournaments to local matches, we push each other to grow as athletes and as people.</p>
-        <a href="https://auwr.co.nz/form/" target="_blank" class="btn-primary" style="display:inline-flex; margin-top:2.5rem;">Join Us →</a>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-top:2.5rem;">
+          <a href="team/" class="btn-primary" style="display:inline-flex;">Meet the Team →</a>
+          <a href="https://auwr.co.nz/form/" target="_blank" class="btn-secondary" style="display:inline-flex; font-size:0.85rem; padding:0.55rem 1.2rem;">Join Us</a>
+        </div>
       </div>
     </div>
     <div class="fullscreen-quote left">

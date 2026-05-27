@@ -67,7 +67,7 @@
       background: var(--accent-blue); color: #000 !important;
       padding: 0.55rem 1.4rem; border-radius: 100px;
       font-weight: 700 !important; font-size: 0.85rem !important;
-      transition: box-shadow 0.3s, transform 0.2s !important;
+      transition: box-shadow 0.12s, transform 0.12s !important;
     }
     .nav-cta::after { display: none !important; }
     .nav-cta:hover { box-shadow: 0 0 28px var(--accent-glow) !important; transform: translateY(-1px); }
@@ -187,14 +187,14 @@
       font-weight: 900;
       line-height: 1;
       letter-spacing: -0.05em;
-      color: rgba(255,255,255,0.62);
+      color: rgba(255,255,255,0.92);
       pointer-events: none;
       user-select: none;
       z-index: 2;
-      transition: color 0.35s;
-      text-shadow: 0 2px 16px rgba(0,0,0,0.75);
+      transition: color 0.12s;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 24px rgba(0,0,0,0.6);
     }
-    .player-card:hover .card-ghost-num { color: rgba(255,255,255,0.82); }
+    .player-card:hover .card-ghost-num { color: #fff; }
     .player-card.active .card-ghost-num { color: var(--accent-cyan); text-shadow: 0 0 24px rgba(0,255,234,0.5); }
 
     .card-hint {
@@ -284,7 +284,7 @@
 
     /* UID tag — top right of photo */
     .panel-uid {
-      position: absolute; top: 12px; right: 14px; z-index: 9;
+      position: absolute; top: 68px; right: 14px; z-index: 9;
       display: flex; flex-direction: column; align-items: flex-end; gap: 0;
     }
     .panel-uid-label {
@@ -295,8 +295,8 @@
     .panel-uid-num {
       font-family: var(--font-display); font-size: 4rem; font-weight: 900;
       line-height: 1; letter-spacing: -0.05em;
-      color: rgba(255,255,255,0.92);
-      text-shadow: 0 2px 20px rgba(0,0,0,0.8), 0 0 30px rgba(0,180,255,0.3);
+      color: var(--accent-cyan);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.95), 0 0 28px rgba(0,255,234,0.55);
     }
 
     /* horizontal decorative lines (angled) */
