@@ -1,0 +1,23 @@
+# Claude Code config
+.claude/
+
+# Backup / scratch files
+index_BackUp_NoFlag.html
+index_OldNonResponsive.html
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Node (in case introduced later)
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+dist/
