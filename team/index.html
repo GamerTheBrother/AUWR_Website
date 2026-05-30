@@ -701,37 +701,34 @@
     return q;
   }
 
-  function parseCSVLine(line) {
-    const fields = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
+  function parseCSV(text) {
+    // Full-text parser — handles multiline quoted fields correctly
+    text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+    const rows = [];
+    let cur = '', inQuote = false, row = [];
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
       if (inQuote) {
-        if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+        if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; }
         else if (ch === '"') { inQuote = false; }
         else { cur += ch; }
       } else {
         if (ch === '"')      { inQuote = true; }
-        else if (ch === ',') { fields.push(cur); cur = ''; }
+        else if (ch === ',') { row.push(cur); cur = ''; }
+        else if (ch === '\n') { row.push(cur); cur = ''; rows.push(row); row = []; }
         else                 { cur += ch; }
       }
     }
-    fields.push(cur);
-    return fields;
-  }
+    row.push(cur); rows.push(row);
 
-  function parseCSV(text) {
-    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-    if (lines.length < 2) return [];
-    if (lines[0].charCodeAt(0) === 0xFEFF) lines[0] = lines[0].slice(1);
-
-    const headers = parseCSVLine(lines[0]).map(h => h.trim());
+    if (rows.length < 2) return [];
+    const headers = rows[0].map(h => h.trim());
     const players = [];
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const vals = parseCSVLine(line);
+    for (let i = 1; i < rows.length; i++) {
+      const vals = rows[i];
       const row  = {};
       headers.forEach((h, idx) => { row[h] = (vals[idx] || '').trim(); });
 
@@ -745,7 +742,7 @@
         number:       row[COL.number]   || '0',
         position:     row[COL.position] || 'Forward',
         badges:       parseBadges(row[COL.role]),
-        photo:        `../images/Teamphotos/${first}_${last}.jpg`,
+        photo:        `../images/Teamphotos/${first.trim()}_${last.trim()}.jpg`,
         yearsPlaying: safeInt(row[COL.years]),
         tournaments:  safeInt(row[COL.tournaments]),
         joinedYear:   safeInt(row[COL.joined], 2020),
