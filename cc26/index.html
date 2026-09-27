@@ -198,8 +198,7 @@
         linear-gradient(160deg, rgba(255,240,184,0.1), rgba(122,86,15,0.16));
     }
     .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
-    .card-flags { display: flex; gap: 0.2rem; flex: none; }
-    .card-flags .flag-img { width: 20px; }
+    .card-flags { position: absolute; top: 9%; right: 9%; z-index: 1; display: grid; gap: 0.3rem; }
     .flag-img { display: block; width: 26px; height: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(40,25,0,0.35), 0 2px 5px rgba(0,0,0,0.35); }
     .dlg-flags { display: inline-flex; gap: 0.35rem; vertical-align: -2px; margin-right: 0.45rem; }
     .dlg-flags .flag-img { width: 22px; }
@@ -217,7 +216,6 @@
       padding: 0 8%; white-space: nowrap;
     }
     .card-name-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-    .card-name.is-long { font-size: clamp(0.95rem, 1.7vw, 1.15rem); }
     .card-rule { position: absolute; left: 14%; right: 14%; top: 76.5%; height: 1px; background: rgba(60,40,0,0.45); }
     .card-stats { position: absolute; left: 12%; right: 12%; top: 78.5%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
     .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
@@ -451,10 +449,8 @@
             <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
             ${tag ? `<div class="card-badge">${tag}</div>` : ''}
           </div>
-          <div class="card-name${displayName(p).length + 2 * Math.min(2, countryCodes(p.nationality).length) > 11 ? ' is-long' : ''}">
-            ${countryCodes(p.nationality).length ? `<span class="card-flags">${flagsHTML(p.nationality)}</span>` : ''}
-            <span class="card-name-text">${esc(displayName(p))}</span>
-          </div>
+          ${countryCodes(p.nationality).length ? `<div class="card-flags">${flagsHTML(p.nationality)}</div>` : ''}
+          <div class="card-name"><span class="card-name-text">${esc(displayName(p))}</span></div>
           <div class="card-rule"></div>
           <div class="card-stats">
             <div><b>${p.yearsPlaying}</b><span>YRS</span></div>
