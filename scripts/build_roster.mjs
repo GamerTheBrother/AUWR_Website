@@ -81,6 +81,7 @@ function buildTeam(team) {
       funFact:      p.funFact || '',
       quote:        wrapQuote(p.quote),
       nationality:  p.nationality || '',
+      photoPos:     p.photoPos || '',
       // raw fields, used by the join forms to prefill profile updates
       role:         p.role || '',
       rawQuote:     p.quote || '',

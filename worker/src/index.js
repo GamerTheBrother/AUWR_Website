@@ -127,12 +127,17 @@ function validatePlayer(raw) {
     if (required && !p[k]) errors.push(`${k} is required.`);
   }
 
+  // photo framing chosen in the CC26 form preview: "x% y%" (CSS object-position)
+  p.photoPos = clean(raw.photoPos);
+  if (!/^\d{1,3}% \d{1,3}%$/.test(p.photoPos) || p.photoPos.split(' ').some(v => parseInt(v, 10) > 100)) p.photoPos = '';
+
   // key order matches existing data/players/*.json files
   const ordered = {
     firstName: p.firstName, lastName: p.lastName, number: p.number, position: p.position,
     role: p.role, yearsPlaying: p.yearsPlaying, tournaments: p.tournaments, joinedYear: p.joinedYear,
     favDrill: p.favDrill, aboveWater: p.aboveWater, about: p.about, knownAs: p.knownAs,
     funFact: p.funFact, quote: p.quote, nationality: p.nationality,
+    ...(p.photoPos ? { photoPos: p.photoPos } : {}),
   };
   return { player: ordered, errors };
 }

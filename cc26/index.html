@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="../assets/cc26-card.css">
   <style>
     :root {
       --bg: #07070a;
@@ -149,78 +150,8 @@
 
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.5rem; }
 
-    /* FUT-style gold card */
-    .card {
-      --rx: 0deg; --ry: 0deg;
-      position: relative; aspect-ratio: 3 / 4.25; border: none; cursor: pointer; padding: 0; color: #1c1405;
-      font: inherit; text-align: left; background: none;
-      transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
-      transition: transform 0.2s ease-out, filter 0.2s;
-      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.55));
-      animation: deal 0.6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 60ms);
-    }
-    .card:hover, .card:focus-visible { filter: drop-shadow(0 18px 40px rgba(232,185,73,0.35)); outline: none; }
-    @keyframes deal { from { opacity: 0; transform: translateY(30px) rotateX(20deg); } }
-    .card-face {
-      position: absolute; inset: 0; overflow: hidden;
-      clip-path: polygon(0 7%, 7% 0, 93% 0, 100% 7%, 100% 86%, 50% 100%, 0 86%);
-      background:
-        radial-gradient(ellipse 90% 60% at 50% 20%, rgba(255,255,255,0.55), transparent 60%),
-        linear-gradient(160deg, #fff0b8 0%, var(--gold-hi) 18%, var(--gold) 48%, #b8861c 80%, #7a560f 100%);
-    }
-    .card-face::before { /* engraved pattern */
-      content: ''; position: absolute; inset: 0; opacity: 0.18;
-      background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(90,60,0,0.6) 10px 11px);
-      mask: linear-gradient(180deg, #000, transparent 70%);
-    }
-    .card-face::after { /* shine sweep */
-      content: ''; position: absolute; inset: -40%; transform: translateX(-60%) rotate(20deg);
-      background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.7) 50%, transparent 60%);
-      transition: transform 0.7s ease;
-    }
-    .card:hover .card-face::after { transform: translateX(60%) rotate(20deg); }
-    .card-inner { position: absolute; inset: 3.5% 4%; clip-path: polygon(0 6%, 6.5% 0, 93.5% 0, 100% 6%, 100% 86%, 50% 100%, 0 86%); border: 0; }
-    .card-inner::before { content: ''; position: absolute; inset: 0; border: 1.5px solid rgba(90,60,0,0.45); clip-path: inherit; }
-    .card-photo {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center 22%;
-      filter: saturate(0.85) contrast(1.05);
-    }
-    /* gold overlay: light tint over the photo, solid gold behind the name/stats,
-       and a gold corner glow so the number stays readable */
-    .card-shade {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 44% 40% at 0% 0%, rgba(255,227,150,0.92) 0%, rgba(255,227,150,0.5) 50%, transparent 100%),
-        linear-gradient(180deg,
-          rgba(232,185,73,0) 50%, rgba(232,185,73,0.25) 57%, rgba(232,185,73,0.6) 62%,
-          rgba(232,185,73,0.88) 67%, #dcaa3c 73%, #b8861c 90%, #7a560f 100%),
-        linear-gradient(160deg, rgba(255,240,184,0.1), rgba(122,86,15,0.16));
-    }
-    .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
-    .card-flags { position: absolute; top: 9%; right: 9%; z-index: 1; display: grid; gap: 0.3rem; }
-    .flag-img { display: block; width: 26px; height: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(40,25,0,0.35), 0 2px 5px rgba(0,0,0,0.35); }
     .dlg-flags { display: inline-flex; gap: 0.35rem; vertical-align: -2px; margin-right: 0.45rem; }
     .dlg-flags .flag-img { width: 22px; }
-    .card-num { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; text-shadow: 0 1px 0 rgba(255,240,190,0.55); }
-    .card-pos { font-weight: 800; font-size: 0.72rem; letter-spacing: 0.08em; background: rgba(255,232,160,0.92); padding: 0.08rem 0.4rem; border-radius: 3px; }
-    .card-badge {
-      margin-top: 0.35rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.2rem 0.4rem;
-      background: #1c1405; color: var(--gold-hi); border-radius: 3px;
-    }
-    .card-name {
-      position: absolute; left: 0; right: 0; top: 66.5%; z-index: 1;
-      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-      text-shadow: 0 1px 0 rgba(255,236,170,0.45);
-      font-family: var(--font-display); font-size: clamp(1.15rem, 2.2vw, 1.45rem); letter-spacing: 0.02em; text-transform: uppercase;
-      padding: 0 8%; white-space: nowrap;
-    }
-    .card-name-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-    .card-rule { position: absolute; left: 14%; right: 14%; top: 76.5%; height: 1px; background: rgba(60,40,0,0.45); }
-    .card-stats { position: absolute; left: 12%; right: 12%; top: 78.5%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
-    .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
-    .card-stats span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.75; }
-    .card-initials { position: absolute; left: 0; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
 
     /* ─── EMPTY STATE ─── */
     .empty { text-align: center; padding: 2rem 0 1rem; }
@@ -276,11 +207,6 @@
       .stat-label { font-size: 0.52rem; letter-spacing: 0.08em; }
       .squad { padding: 1.75rem 1rem 4rem; }
       .cards { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .card-stats b { font-size: 0.95rem; }
-      .card-stats span { font-size: 0.5rem; }
-      .card-num { font-size: 1.8rem; }
-      .card-pos { font-size: 0.66rem; }
-      .card-name { font-size: 1rem; }
       .ghost-card { width: 96px; font-size: 2.4rem; }
       .dlg { grid-template-columns: 1fr; overflow-y: auto; }
       .dlg-photo { min-height: 300px; }
@@ -288,8 +214,7 @@
       footer { padding: 1.5rem 1rem; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .card, dialog[open] { animation: none; }
-      .card { transition: none; }
+      dialog[open] { animation: none; }
     }
   </style>
 </head>
@@ -364,62 +289,14 @@
   <p><a href="../index.html">← Back to Home</a> &nbsp;·&nbsp; <a href="../team/">Club roster</a> &nbsp;·&nbsp; AUWR © 2026</p>
 </footer>
 
+<script src="../assets/cc26-card.js"></script>
 <script>
   /* ─── CC26 SQUAD — built from data/cc26/players/*.json by scripts/build_roster.mjs ─── */
 
   const POSITIONS = ['Goalie', 'Back', 'Forward']; // display order
-  const POS_SHORT = { Goalie: 'GK', Back: 'BK', Forward: 'FW' };
-
   const squadEl = document.getElementById('squad');
   const dialog  = document.getElementById('profile');
   let SQUAD = [];
-
-  function esc(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  }
-
-  function roleTag(p) {
-    const r = (p.role || '').toLowerCase();
-    if (r.includes('vice')) return 'VC';
-    if (r.includes('captain')) return 'C';
-    if (r.includes('coach')) return 'COACH';
-    return '';
-  }
-
-  /* Nationality is free text ("Colombian", "New Zealand / British"), so map country
-     names and demonyms to ISO codes for flagcdn.com. Unknown text just shows no flag. */
-  const COUNTRY = {
-    nz: ['new zealand', 'nz', 'kiwi', 'aotearoa'], au: ['australia', 'australian', 'aussie'],
-    gb: ['united kingdom', 'uk', 'britain', 'great britain', 'british'], 'gb-eng': ['england', 'english'],
-    'gb-sct': ['scotland', 'scottish'], 'gb-wls': ['wales', 'welsh'], ie: ['ireland', 'irish'],
-    co: ['colombia', 'colombian'], ar: ['argentina', 'argentinian', 'argentine'], cl: ['chile', 'chilean'],
-    pe: ['peru', 'peruvian'], ve: ['venezuela', 'venezuelan'], ec: ['ecuador', 'ecuadorian'], uy: ['uruguay', 'uruguayan'],
-    br: ['brazil', 'brazilian'], mx: ['mexico', 'mexican'], us: ['usa', 'united states', 'america', 'american'],
-    ca: ['canada', 'canadian'], es: ['spain', 'spanish'], pt: ['portugal', 'portuguese'], fr: ['france', 'french'],
-    it: ['italy', 'italian'], de: ['germany', 'german'], nl: ['netherlands', 'holland', 'dutch'],
-    be: ['belgium', 'belgian'], ch: ['switzerland', 'swiss'], at: ['austria', 'austrian'], dk: ['denmark', 'danish'],
-    se: ['sweden', 'swedish'], no: ['norway', 'norwegian'], fi: ['finland', 'finnish'], pl: ['poland', 'polish'],
-    hu: ['hungary', 'hungarian'], cz: ['czechia', 'czech republic', 'czech'], tr: ['turkey', 'türkiye', 'turkiye', 'turkish'],
-    ru: ['russia', 'russian'], ua: ['ukraine', 'ukrainian'], za: ['south africa', 'south african'],
-    jp: ['japan', 'japanese'], cn: ['china', 'chinese'], kr: ['korea', 'south korea', 'korean'], in: ['india', 'indian'],
-    ph: ['philippines', 'filipino', 'filipina'], sg: ['singapore', 'singaporean'], my: ['malaysia', 'malaysian'],
-    id: ['indonesia', 'indonesian'], fj: ['fiji', 'fijian'], ws: ['samoa', 'samoan'], to: ['tonga', 'tongan'],
-  };
-  const NAME_TO_CODE = Object.fromEntries(Object.entries(COUNTRY).flatMap(([code, names]) => names.map(n => [n, code])));
-
-  function countryCodes(nationality) {
-    const codes = (nationality || '')
-      .split(/[\/&,+]| and /i)
-      .map(s => NAME_TO_CODE[s.trim().toLowerCase().replace(/[.]/g, '')])
-      .filter(Boolean);
-    return [...new Set(codes)];
-  }
-
-  function flagsHTML(nationality, max = 2) {
-    return countryCodes(nationality).slice(0, max).map(c =>
-      `<img class="flag-img" src="https://flagcdn.com/w40/${c}.png" srcset="https://flagcdn.com/w80/${c}.png 2x" alt="${c.toUpperCase()}" width="26" height="17" loading="lazy">`
-    ).join('');
-  }
 
   function nationalities(players) {
     const set = new Set();
@@ -430,35 +307,6 @@
       else if (p.nationality) set.add(p.nationality.trim().toLowerCase());
     });
     return set.size;
-  }
-
-  const displayName = p => p.knownAs || p.lastName;
-
-  function cardHTML(p, i) {
-    const tag = roleTag(p);
-    const initials = (p.firstName[0] || '') + (p.lastName[0] || '');
-    return `
-      <button class="card" style="--i:${i}" data-index="${SQUAD.indexOf(p)}" aria-label="${esc(p.firstName)} ${esc(p.lastName)}, number ${esc(p.number)}">
-        <div class="card-face">
-          ${p.photo
-            ? `<img class="card-photo" src="${esc(p.photo)}" alt="" loading="lazy"><div class="card-shade"></div>`
-            : `<div class="card-initials">${esc(initials)}</div>`}
-          <div class="card-inner"></div>
-          <div class="card-meta">
-            <div class="card-num">${esc(p.number)}</div>
-            <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
-            ${tag ? `<div class="card-badge">${tag}</div>` : ''}
-          </div>
-          ${countryCodes(p.nationality).length ? `<div class="card-flags">${flagsHTML(p.nationality)}</div>` : ''}
-          <div class="card-name"><span class="card-name-text">${esc(displayName(p))}</span></div>
-          <div class="card-rule"></div>
-          <div class="card-stats">
-            <div><b>${p.yearsPlaying}</b><span>YRS</span></div>
-            <div><b>${p.tournaments}</b><span>TRN</span></div>
-            <div><b>${String(p.joinedYear).slice(-2)}</b><span>EST</span></div>
-          </div>
-        </div>
-      </button>`;
   }
 
   function render(players) {
@@ -489,7 +337,7 @@
       <div class="filters" role="group" aria-label="Filter by position">
         ${chips.map(([val, label, n]) => `<button class="filter" data-pos="${val}" aria-pressed="${val === 'all'}">${label}<span>${n}</span></button>`).join('')}
       </div>
-      <div class="cards">${ordered.map((p, i) => cardHTML(p, i)).join('')}</div>`;
+      <div class="cards">${ordered.map((p, i) => cardHTML(p, { i, index: SQUAD.indexOf(p) })).join('')}</div>`;
 
     squadEl.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
       const pos = btn.dataset.pos;
@@ -530,7 +378,7 @@
     const tagText = { C: 'Captain', VC: 'Vice Captain', COACH: 'Coach' }[tag];
     document.getElementById('dlg').innerHTML = `
       <div class="dlg-photo">
-        ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.firstName)} ${esc(p.lastName)}">` : ''}
+        ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.firstName)} ${esc(p.lastName)}" style="object-position:${photoPos(p)}">` : ''}
         <div class="dlg-num">${esc(p.number)}</div>
       </div>
       <div class="dlg-body">

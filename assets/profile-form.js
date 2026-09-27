@@ -11,7 +11,11 @@
  *     rosterUrl:  '../../data/roster.json',   // players that can be updated
  *     copyFromUrl: '../../data/roster.json',  // optional: prefill source for #copy-from
  *     requirePhoto: true,                     // new players must upload one
+ *     onChange: data => {},                   // optional: live form values + `photo` URL, for previews
  *   });
+ *
+ * Returns { notify, setField } so a preview can write back (e.g. photo framing)
+ * and re-trigger onChange.
  */
 
 /* ─── CONFIG ─── set after deploying worker/ (see worker/README.md) */
@@ -26,7 +30,8 @@ const PHOTO_TARGET_BYTES = 180 * 1024;
 const PHOTO_QUALITIES = [0.82, 0.74, 0.66, 0.58, 0.5];
 
 const PREFILL_FIELDS = ['firstName', 'lastName', 'knownAs', 'nationality', 'number', 'position', 'role',
-                        'joinedYear', 'yearsPlaying', 'tournaments', 'favDrill', 'about', 'aboveWater', 'funFact'];
+                        'joinedYear', 'yearsPlaying', 'tournaments', 'favDrill', 'about', 'aboveWater', 'funFact',
+                        'photoPos'];
 
 function canvasToBlob(canvas, quality) {
   return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
@@ -69,7 +74,7 @@ async function compressPhoto(file) {
   return { ...best, dataUrl: await blobToDataUrl(best.blob) };
 }
 
-function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) {
+function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true, onChange }) {
   const form      = document.getElementById('profile-form');
   const statusEl  = document.getElementById('status');
   const submitBtn = document.getElementById('submit');
@@ -85,8 +90,18 @@ function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) 
 
   let photoDataUrl = null;
   let hasExistingPhoto = false; // current/copied profile already has a photo
+  let photoUrl = '';            // whatever photo the card would show right now
   let roster = [];
   let copySource = [];
+
+  function notify() {
+    if (onChange) onChange({ ...Object.fromEntries(new FormData(form)), photo: photoUrl });
+  }
+
+  function setField(name, value) {
+    if (form.elements[name]) form.elements[name].value = value;
+    notify();
+  }
 
   function setStatus(msg, kind = '') {
     statusEl.textContent = msg;
@@ -116,6 +131,7 @@ function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) 
   function resetPhoto() {
     photoDataUrl = null;
     hasExistingPhoto = false;
+    photoUrl = '';
     photoIn.value = '';
     preview.style.backgroundImage = '';
     preview.classList.remove('has');
@@ -129,25 +145,27 @@ function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) 
     resetPhoto();
     if (p.photo) {
       // p.photo is relative to a section page (e.g. ../images/...), one level below the site root
-      preview.style.backgroundImage = `url("${new URL(p.photo, new URL('team/', siteRoot)).href}")`;
+      photoUrl = new URL(p.photo, new URL('team/', siteRoot)).href;
+      preview.style.backgroundImage = `url("${photoUrl}")`;
       preview.classList.add('has');
       hasExistingPhoto = true;
       photoHint.textContent = photoMsg;
     }
     updateCounters();
+    notify();
   }
 
   existing.addEventListener('change', () => {
     const p = roster[existing.value];
     if (copyFrom) copyFrom.value = '';
-    if (!p) { form.reset(); resetPhoto(); updateCounters(); return; }
+    if (!p) { form.reset(); resetPhoto(); updateCounters(); notify(); return; }
     prefill(p, 'Current photo shown. Upload a new one only if you want to replace it.');
   });
 
   copyFrom?.addEventListener('change', () => {
     const p = copySource[copyFrom.value];
     existing.value = '';
-    if (!p) { form.reset(); resetPhoto(); updateCounters(); return; }
+    if (!p) { form.reset(); resetPhoto(); updateCounters(); notify(); return; }
     prefill(p, 'Your club roster photo will be used. Upload a new one to use a different photo here.');
   });
 
@@ -159,11 +177,15 @@ function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) 
     try {
       const { dataUrl, blob, width, height } = await compressPhoto(file);
       photoDataUrl = dataUrl;
+      photoUrl = dataUrl;
+      if (form.elements.photoPos) form.elements.photoPos.value = ''; // new photo, default framing
       preview.style.backgroundImage = `url("${dataUrl}")`;
       preview.classList.add('has');
       photoHint.textContent = `${width}×${height}, ${Math.round(blob.size / 1024)} KB (from ${Math.round(file.size / 1024)} KB)`;
+      notify();
     } catch {
       resetPhoto();
+      notify();
       setStatus("Couldn't read that image. Try a JPG or PNG.", 'error');
     }
   });
@@ -232,4 +254,11 @@ function initProfileForm({ team, rosterUrl, copyFromUrl, requirePhoto = true }) 
       submitBtn.disabled = false;
     }
   });
+
+  /* ─── live preview hook ─── */
+  form.addEventListener('input', notify);
+  form.addEventListener('change', notify);
+  notify();
+
+  return { notify, setField };
 }

@@ -1,0 +1,87 @@
+/*
+ * cc26-card.css — FUT-style gold player card, shared by /cc26/ (squad page)
+ * and /cc26/join/ (live preview). Markup comes from cardHTML() in cc26-card.js.
+ */
+
+/* FUT-style gold card */
+.card {
+  --rx: 0deg; --ry: 0deg;
+  position: relative; aspect-ratio: 3 / 4.25; border: none; cursor: pointer; padding: 0; color: #1c1405;
+  font: inherit; text-align: left; background: none;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.2s ease-out, filter 0.2s;
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,0.55));
+  animation: deal 0.6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 60ms);
+}
+.card:hover, .card:focus-visible { filter: drop-shadow(0 18px 40px rgba(232,185,73,0.35)); outline: none; }
+@keyframes deal { from { opacity: 0; transform: translateY(30px) rotateX(20deg); } }
+.card-face {
+  position: absolute; inset: 0; overflow: hidden;
+  clip-path: polygon(0 7%, 7% 0, 93% 0, 100% 7%, 100% 86%, 50% 100%, 0 86%);
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 20%, rgba(255,255,255,0.55), transparent 60%),
+    linear-gradient(160deg, #fff0b8 0%, var(--gold-hi, #ffe396) 18%, var(--gold, #e8b949) 48%, #b8861c 80%, #7a560f 100%);
+}
+.card-face::before { /* engraved pattern */
+  content: ''; position: absolute; inset: 0; opacity: 0.18;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(90,60,0,0.6) 10px 11px);
+  mask: linear-gradient(180deg, #000, transparent 70%);
+}
+.card-face::after { /* shine sweep */
+  content: ''; position: absolute; inset: -40%; transform: translateX(-60%) rotate(20deg);
+  background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.7) 50%, transparent 60%);
+  transition: transform 0.7s ease;
+}
+.card:hover .card-face::after { transform: translateX(60%) rotate(20deg); }
+.card-inner { position: absolute; inset: 3.5% 4%; clip-path: polygon(0 6%, 6.5% 0, 93.5% 0, 100% 6%, 100% 86%, 50% 100%, 0 86%); border: 0; }
+.card-inner::before { content: ''; position: absolute; inset: 0; border: 1.5px solid rgba(90,60,0,0.45); clip-path: inherit; }
+.card-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center 22%;
+  filter: saturate(0.85) contrast(1.05);
+}
+/* gold overlay: light tint over the photo, solid gold behind the name/stats,
+   and a gold corner glow so the number stays readable */
+.card-shade {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 44% 40% at 0% 0%, rgba(255,227,150,0.92) 0%, rgba(255,227,150,0.5) 50%, transparent 100%),
+    linear-gradient(180deg,
+      rgba(232,185,73,0) 50%, rgba(232,185,73,0.25) 57%, rgba(232,185,73,0.6) 62%,
+      rgba(232,185,73,0.88) 67%, #dcaa3c 73%, #b8861c 90%, #7a560f 100%),
+    linear-gradient(160deg, rgba(255,240,184,0.1), rgba(122,86,15,0.16));
+}
+.card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
+.card-flags { position: absolute; top: 9%; right: 9%; z-index: 1; display: grid; gap: 0.3rem; }
+.flag-img { display: block; width: 26px; height: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(40,25,0,0.35), 0 2px 5px rgba(0,0,0,0.35); }
+.card-num { font-family: var(--font-display, 'Anton', Impact, sans-serif); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; text-shadow: 0 1px 0 rgba(255,240,190,0.55); }
+.card-pos { font-weight: 800; font-size: 0.72rem; letter-spacing: 0.08em; background: rgba(255,232,160,0.92); padding: 0.08rem 0.4rem; border-radius: 3px; }
+.card-badge {
+  margin-top: 0.35rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.2rem 0.4rem;
+  background: #1c1405; color: var(--gold-hi, #ffe396); border-radius: 3px;
+}
+.card-name {
+  position: absolute; left: 0; right: 0; top: 66.5%; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  text-shadow: 0 1px 0 rgba(255,236,170,0.45);
+  font-family: var(--font-display, 'Anton', Impact, sans-serif); font-size: clamp(1.15rem, 2.2vw, 1.45rem); letter-spacing: 0.02em; text-transform: uppercase;
+  padding: 0 8%; white-space: nowrap;
+}
+.card-name-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.card-rule { position: absolute; left: 14%; right: 14%; top: 76.5%; height: 1px; background: rgba(60,40,0,0.45); }
+.card-stats { position: absolute; left: 12%; right: 12%; top: 78.5%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+.card-stats b { display: block; font-family: var(--font-display, 'Anton', Impact, sans-serif); font-weight: 400; font-size: 1.15rem; line-height: 1; }
+.card-stats span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.75; }
+.card-initials { position: absolute; left: 0; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display, 'Anton', Impact, sans-serif); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
+
+@media (max-width: 760px) {
+  .card-stats b { font-size: 0.95rem; }
+  .card-stats span { font-size: 0.5rem; }
+  .card-num { font-size: 1.8rem; }
+  .card-pos { font-size: 0.66rem; }
+  .card-name { font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; transition: none; }
+}
