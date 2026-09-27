@@ -24,3 +24,4 @@ dist/
 
 # Generated at deploy by scripts/build_roster.mjs
 data/roster.json
+worker/.wrangler/

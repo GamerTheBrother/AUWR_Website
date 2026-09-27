@@ -214,7 +214,7 @@
 
 <script>
   /* ─── CONFIG ─── set after deploying worker/ (see worker/README.md) */
-  const SUBMIT_URL = 'https://auwr-roster.YOUR-SUBDOMAIN.workers.dev/submit';
+  const SUBMIT_URL = 'https://auwr-roster.gamerthebrother28913.workers.dev/submit';
   const TURNSTILE_SITEKEY = ''; // optional; must match TURNSTILE_SECRET on the worker
 
   const MAX_PHOTO_EDGE = 1200;   // px, longest side after resize
@@ -359,7 +359,10 @@
       document.getElementById('done').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      setStatus(err.message || 'Something went wrong, please try again.', 'error');
+      // fetch() throws TypeError on network/CORS failure; server errors carry their own message
+      setStatus(err instanceof TypeError
+        ? "Couldn't reach the submission server. Please try again later or contact a club admin."
+        : (err.message || 'Something went wrong, please try again.'), 'error');
       if (TURNSTILE_SITEKEY) window.turnstile?.reset();
     } finally {
       submitBtn.disabled = false;
