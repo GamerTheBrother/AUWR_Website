@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUWR | Player Profile</title>
+  <link rel="icon" type="image/png" href="../../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #04080f;
+      --bg-card: #0c1524;
+      --bg-input: #070e1b;
+      --accent-blue: #00b4ff;
+      --accent-glow: rgba(0, 180, 255, 0.35);
+      --text-primary: #edf2ff;
+      --text-muted: #8aadcc;
+      --border: rgba(0, 180, 255, 0.18);
+      --danger: #ff5c7a;
+      --ok: #3ddc97;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 1.25rem 2.5rem; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(4,8,15,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+    }
+    nav img { height: 40px; }
+    nav a.back { color: #c8daea; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    nav a.back:hover { color: var(--accent-blue); }
+
+    main { max-width: 760px; margin: 0 auto; padding: 8.5rem 1.5rem 4rem; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-blue);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 0.9rem;
+    }
+    .eyebrow::before, .eyebrow::after { content: ''; width: 28px; height: 1px; background: var(--accent-blue); }
+    h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 4rem); line-height: 0.95; letter-spacing: -0.03em; }
+    h1 span { color: var(--accent-blue); }
+    .intro { margin: 1rem 0 2.5rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; max-width: 520px; }
+
+    form { display: grid; gap: 2rem; }
+    fieldset { border: 1px solid var(--border); background: var(--bg-card); border-radius: 12px; padding: 1.5rem; display: grid; gap: 1.1rem; grid-template-columns: 1fr 1fr; }
+    legend { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-blue); padding: 0 0.5rem; }
+    .full { grid-column: 1 / -1; }
+    label { display: grid; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; color: #c8daea; }
+    label small { font-weight: 400; color: var(--text-muted); }
+    .req::after { content: ' *'; color: var(--accent-blue); }
+    input, select, textarea {
+      width: 100%; background: var(--bg-input); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.8rem;
+      font: inherit; font-size: 0.95rem; font-weight: 400;
+    }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .counter { justify-self: end; font-size: 0.72rem; font-weight: 400; color: var(--text-muted); }
+
+    .photo-row { display: flex; gap: 1.25rem; align-items: center; }
+    .photo-preview {
+      width: 120px; aspect-ratio: 3 / 4; flex: none; border-radius: 8px; border: 1px dashed var(--border);
+      background: var(--bg-input) center / cover no-repeat; display: grid; place-items: center;
+      color: var(--text-muted); font-size: 0.72rem; text-align: center;
+    }
+    .photo-preview.has { border-style: solid; color: transparent; }
+    .photo-row input[type=file] { padding: 0.55rem; }
+
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    button[type=submit] {
+      justify-self: start; background: var(--accent-blue); color: #000; border: none; border-radius: 100px;
+      padding: 0.85rem 2.2rem; font: inherit; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    button[type=submit]:hover:not(:disabled) { box-shadow: 0 0 28px var(--accent-glow); transform: translateY(-1px); }
+    button[type=submit]:disabled { opacity: 0.5; cursor: wait; }
+
+    .status { font-size: 0.9rem; line-height: 1.5; min-height: 1.4em; }
+    .status.error { color: var(--danger); }
+    .status.ok { color: var(--ok); }
+
+    .done { display: none; text-align: left; border: 1px solid var(--border); background: var(--bg-card); border-radius: 12px; padding: 2rem; }
+    .done h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 0.6rem; }
+    .done p { color: var(--text-muted); line-height: 1.6; }
+    .done a { color: var(--accent-blue); }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1rem; }
+      main { padding: 7rem 1rem 3rem; }
+      fieldset { grid-template-columns: 1fr; padding: 1.1rem; }
+      .photo-row { flex-direction: column; align-items: stretch; }
+      .photo-preview { width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html"><img src="../../img/img7.png" alt="AUWR"></a>
+  <a class="back" href="../">← Back to roster</a>
+</nav>
+
+<main>
+  <div class="eyebrow">Auckland Underwater Rugby</div>
+  <h1>PLAYER<br><span>PROFILE</span></h1>
+  <p class="intro">
+    Add yourself to the roster, or update your existing profile.
+    Submissions are reviewed by a club admin before they appear on the site.
+  </p>
+
+  <form id="profile-form" novalidate>
+    <fieldset>
+      <legend>Who are you</legend>
+      <label class="full">Updating an existing profile?
+        <select id="existing">
+          <option value="">No — I'm new to the roster</option>
+        </select>
+        <small>Pick your name to prefill the form with your current profile.</small>
+      </label>
+      <label><span class="req">First name</span>
+        <input name="firstName" required maxlength="40" autocomplete="given-name">
+      </label>
+      <label><span class="req">Last name</span>
+        <input name="lastName" required maxlength="40" autocomplete="family-name">
+      </label>
+      <label>Better known as <small>Nickname, optional</small>
+        <input name="knownAs" maxlength="40">
+      </label>
+      <label>Nationality <small>e.g. New Zealand, Colombia</small>
+        <input name="nationality" maxlength="60">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>In the pool</legend>
+      <label><span class="req">Player number</span>
+        <input name="number" required inputmode="numeric" pattern="\d{1,2}" maxlength="2">
+      </label>
+      <label><span class="req">Primary position</span>
+        <select name="position" required>
+          <option value="">Select…</option>
+          <option>Forward</option>
+          <option>Back</option>
+          <option>Goalie</option>
+        </select>
+      </label>
+      <label>Special role in the club
+        <select name="role">
+          <option value="">None</option>
+          <option>Captain</option>
+          <option>Vice Captain</option>
+          <option>Coach</option>
+        </select>
+      </label>
+      <label>Year you joined AUWR
+        <input name="joinedYear" type="number" min="1970" step="1">
+      </label>
+      <label>Years playing underwater rugby
+        <input name="yearsPlaying" type="number" min="0" max="80" step="1">
+      </label>
+      <label>Tournaments competed in
+        <input name="tournaments" type="number" min="0" max="500" step="1">
+      </label>
+      <label class="full">Favourite drill <small>The one you secretly enjoy the most</small>
+        <input name="favDrill" maxlength="120">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>About you</legend>
+      <label class="full"><span class="req">About you</span> <small>1–2 sentences, written in third person</small>
+        <textarea name="about" required maxlength="600" data-counter></textarea>
+      </label>
+      <label class="full">Above water <small>What do you do outside the pool? e.g. Software Developer, Student, Pilot</small>
+        <input name="aboveWater" maxlength="160">
+      </label>
+      <label class="full">Fun fact about yourself
+        <textarea name="funFact" maxlength="300" data-counter></textarea>
+      </label>
+      <label class="full">Your phrase <small>One sentence that represents you as a player / teammate</small>
+        <input name="quote" maxlength="200">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Photo</legend>
+      <div class="full photo-row">
+        <div class="photo-preview" id="photo-preview">No photo</div>
+        <label style="flex:1">Portrait photo <small id="photo-hint">Recent, face clearly visible, portrait orientation works best.</small>
+          <input type="file" id="photo" accept="image/*">
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- honeypot: humans never see or fill this -->
+    <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+
+    <div id="turnstile"></div>
+    <button type="submit" id="submit">Submit for review</button>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </form>
+
+  <div class="done" id="done">
+    <h2>Thanks — you're in the queue.</h2>
+    <p>A club admin will review your profile. Once approved it will show up on the <a href="../">roster</a> within a few minutes.</p>
+  </div>
+</main>
+
+<script>
+  /* ─── CONFIG ─── set after deploying worker/ (see worker/README.md) */
+  const SUBMIT_URL = 'https://auwr-roster.YOUR-SUBDOMAIN.workers.dev/submit';
+  const TURNSTILE_SITEKEY = ''; // optional; must match TURNSTILE_SECRET on the worker
+
+  const MAX_PHOTO_EDGE = 1200;   // px, longest side after resize
+  const PHOTO_QUALITY  = 0.85;
+
+  const form      = document.getElementById('profile-form');
+  const statusEl  = document.getElementById('status');
+  const submitBtn = document.getElementById('submit');
+  const existing  = document.getElementById('existing');
+  const photoIn   = document.getElementById('photo');
+  const preview   = document.getElementById('photo-preview');
+  const photoHint = document.getElementById('photo-hint');
+  const photoHintDefault = photoHint.textContent;
+
+  form.elements.joinedYear.max = new Date().getFullYear();
+
+  let photoDataUrl = null;
+  let roster = [];
+
+  /* ─── prefill from current roster ─── */
+  fetch('../../data/roster.json')
+    .then(r => r.ok ? r.json() : [])
+    .then(players => {
+      roster = players;
+      players
+        .slice()
+        .sort((a, b) => a.firstName.localeCompare(b.firstName))
+        .forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = players.indexOf(p);
+          opt.textContent = `${p.firstName} ${p.lastName} (#${p.number})`;
+          existing.appendChild(opt);
+        });
+    })
+    .catch(() => {});
+
+  existing.addEventListener('change', () => {
+    const p = roster[existing.value];
+    if (!p) { form.reset(); resetPhoto(); return; }
+    const f = form.elements;
+    for (const k of ['firstName', 'lastName', 'knownAs', 'nationality', 'number', 'position', 'role',
+                     'joinedYear', 'yearsPlaying', 'tournaments', 'favDrill', 'about', 'aboveWater', 'funFact']) {
+      if (f[k]) f[k].value = p[k] ?? '';
+    }
+    f.quote.value = p.rawQuote ?? '';
+    resetPhoto();
+    if (p.photo) {
+      preview.style.backgroundImage = `url("${new URL(p.photo, new URL('../', location.href)).href}")`;
+      preview.classList.add('has');
+      photoHint.textContent = 'Current photo shown. Upload a new one only if you want to replace it.';
+    }
+    updateCounters();
+  });
+
+  /* ─── photo: resize + convert to JPEG in the browser ─── */
+  function resetPhoto() {
+    photoDataUrl = null;
+    photoIn.value = '';
+    preview.style.backgroundImage = '';
+    preview.classList.remove('has');
+    photoHint.textContent = photoHintDefault;
+  }
+
+  photoIn.addEventListener('change', async () => {
+    const file = photoIn.files[0];
+    if (!file) return;
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const scale = Math.min(1, MAX_PHOTO_EDGE / Math.max(bmp.width, bmp.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(bmp.width * scale);
+      canvas.height = Math.round(bmp.height * scale);
+      canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      photoDataUrl = canvas.toDataURL('image/jpeg', PHOTO_QUALITY);
+      preview.style.backgroundImage = `url("${photoDataUrl}")`;
+      preview.classList.add('has');
+      photoHint.textContent = `${canvas.width}×${canvas.height}, ~${Math.round(photoDataUrl.length * 0.75 / 1024)} KB`;
+    } catch {
+      resetPhoto();
+      setStatus("Couldn't read that image. Try a JPG or PNG.", 'error');
+    }
+  });
+
+  /* ─── character counters ─── */
+  const counters = [...form.querySelectorAll('[data-counter]')].map(el => {
+    const c = document.createElement('span');
+    c.className = 'counter';
+    el.after(c);
+    el.addEventListener('input', () => { c.textContent = `${el.value.length} / ${el.maxLength}`; });
+    return () => { c.textContent = `${el.value.length} / ${el.maxLength}`; };
+  });
+  const updateCounters = () => counters.forEach(fn => fn());
+  updateCounters();
+
+  /* ─── optional Turnstile captcha ─── */
+  if (TURNSTILE_SITEKEY) {
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    s.async = true;
+    s.onload = () => turnstile.render('#turnstile', { sitekey: TURNSTILE_SITEKEY, theme: 'dark' });
+    document.head.appendChild(s);
+  }
+
+  /* ─── submit ─── */
+  function setStatus(msg, kind = '') {
+    statusEl.textContent = msg;
+    statusEl.className = `status ${kind}`;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      const bad = form.querySelector('input:invalid, select:invalid, textarea:invalid');
+      const lbl = bad.closest('label');
+      bad.focus();
+      setStatus(`Please check "${(lbl.querySelector('.req') || lbl.firstChild).textContent.trim()}".`, 'error');
+      return;
+    }
+    const isUpdate = !!roster[existing.value];
+    if (!photoDataUrl && !isUpdate) {
+      setStatus('Please add a photo so we can show you on the roster.', 'error');
+      photoIn.focus();
+      return;
+    }
+
+    const data = Object.fromEntries(new FormData(form));
+    const { website, ...player } = data;
+    const payload = { player, photo: photoDataUrl, website };
+    if (TURNSTILE_SITEKEY) payload.turnstileToken = window.turnstile?.getResponse();
+
+    submitBtn.disabled = true;
+    setStatus('Submitting…');
+    try {
+      const res = await fetch(SUBMIT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.ok) throw new Error(out.error || `Error ${res.status}`);
+      form.style.display = 'none';
+      document.getElementById('done').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      setStatus(err.message || 'Something went wrong, please try again.', 'error');
+      if (TURNSTILE_SITEKEY) window.turnstile?.reset();
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
