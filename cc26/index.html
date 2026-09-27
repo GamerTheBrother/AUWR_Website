@@ -293,7 +293,7 @@
 <script>
   /* ─── CC26 SQUAD — built from data/cc26/players/*.json by scripts/build_roster.mjs ─── */
 
-  const POSITIONS = ['Goalie', 'Back', 'Forward']; // display order
+  const POSITIONS = ['Goalie', 'Back', 'Forward']; // filter chip order
   const squadEl = document.getElementById('squad');
   const dialog  = document.getElementById('profile');
   let SQUAD = [];
@@ -328,8 +328,8 @@
     countUp('stat-tourn', players.reduce((s, p) => s + p.tournaments, 0));
     countUp('stat-nations', nationalities(players));
 
-    const rank = p => (POSITIONS.indexOf(p.position) + 1) || 99;
-    const ordered = players.slice().sort((a, b) => rank(a) - rank(b) || (parseInt(a.number) || 999) - (parseInt(b.number) || 999));
+    // squad order: by shirt number, ascending (position filters narrow it down)
+    const ordered = players.slice().sort((a, b) => (parseInt(a.number) || 999) - (parseInt(b.number) || 999));
     const chips = [['all', 'All', players.length],
       ...POSITIONS.map(pos => [pos, POS_SHORT[pos], players.filter(p => p.position === pos).length]).filter(c => c[2])];
 
