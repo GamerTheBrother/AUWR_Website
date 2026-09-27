@@ -191,11 +191,17 @@
     .card-shade {
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 0% 0%, rgba(255,227,150,0.97) 0%, rgba(255,227,150,0.7) 45%, transparent 80%),
-        linear-gradient(180deg, rgba(232,185,73,0) 42%, rgba(232,185,73,0.9) 61%, #dcaa3c 70%, #b8861c 88%, #7a560f 100%),
-        linear-gradient(160deg, rgba(255,240,184,0.22), rgba(122,86,15,0.28));
+        radial-gradient(ellipse 44% 40% at 0% 0%, rgba(255,227,150,0.92) 0%, rgba(255,227,150,0.5) 50%, transparent 100%),
+        linear-gradient(180deg,
+          rgba(232,185,73,0) 50%, rgba(232,185,73,0.25) 57%, rgba(232,185,73,0.6) 62%,
+          rgba(232,185,73,0.88) 67%, #dcaa3c 73%, #b8861c 90%, #7a560f 100%),
+        linear-gradient(160deg, rgba(255,240,184,0.1), rgba(122,86,15,0.16));
     }
     .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
+    .card-flags { display: grid; gap: 0.25rem; margin-top: 0.3rem; }
+    .flag-img { display: block; width: 26px; height: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(40,25,0,0.35), 0 2px 5px rgba(0,0,0,0.35); }
+    .dlg-flags { display: inline-flex; gap: 0.35rem; vertical-align: -2px; margin-right: 0.45rem; }
+    .dlg-flags .flag-img { width: 22px; }
     .card-num { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; text-shadow: 0 1px 0 rgba(255,240,190,0.55); }
     .card-pos { font-weight: 800; font-size: 0.72rem; letter-spacing: 0.08em; background: rgba(255,232,160,0.92); padding: 0.08rem 0.4rem; border-radius: 3px; }
     .card-badge {
@@ -203,12 +209,13 @@
       background: #1c1405; color: var(--gold-hi); border-radius: 3px;
     }
     .card-name {
-      position: absolute; left: 0; right: 0; top: 64%; text-align: center; z-index: 1;
+      position: absolute; left: 0; right: 0; top: 66.5%; text-align: center; z-index: 1;
+      text-shadow: 0 1px 0 rgba(255,236,170,0.45);
       font-family: var(--font-display); font-size: clamp(1.15rem, 2.2vw, 1.45rem); letter-spacing: 0.02em; text-transform: uppercase;
       padding: 0 8%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .card-rule { position: absolute; left: 14%; right: 14%; top: 74.5%; height: 1px; background: rgba(60,40,0,0.45); }
-    .card-stats { position: absolute; left: 12%; right: 12%; top: 77%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+    .card-rule { position: absolute; left: 14%; right: 14%; top: 76.5%; height: 1px; background: rgba(60,40,0,0.45); }
+    .card-stats { position: absolute; left: 12%; right: 12%; top: 78.5%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
     .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
     .card-stats span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.75; }
     .card-initials { position: absolute; left: 0; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
@@ -377,13 +384,49 @@
     return '';
   }
 
+  /* Nationality is free text ("Colombian", "New Zealand / British"), so map country
+     names and demonyms to ISO codes for flagcdn.com. Unknown text just shows no flag. */
+  const COUNTRY = {
+    nz: ['new zealand', 'nz', 'kiwi', 'aotearoa'], au: ['australia', 'australian', 'aussie'],
+    gb: ['united kingdom', 'uk', 'britain', 'great britain', 'british'], 'gb-eng': ['england', 'english'],
+    'gb-sct': ['scotland', 'scottish'], 'gb-wls': ['wales', 'welsh'], ie: ['ireland', 'irish'],
+    co: ['colombia', 'colombian'], ar: ['argentina', 'argentinian', 'argentine'], cl: ['chile', 'chilean'],
+    pe: ['peru', 'peruvian'], ve: ['venezuela', 'venezuelan'], ec: ['ecuador', 'ecuadorian'], uy: ['uruguay', 'uruguayan'],
+    br: ['brazil', 'brazilian'], mx: ['mexico', 'mexican'], us: ['usa', 'united states', 'america', 'american'],
+    ca: ['canada', 'canadian'], es: ['spain', 'spanish'], pt: ['portugal', 'portuguese'], fr: ['france', 'french'],
+    it: ['italy', 'italian'], de: ['germany', 'german'], nl: ['netherlands', 'holland', 'dutch'],
+    be: ['belgium', 'belgian'], ch: ['switzerland', 'swiss'], at: ['austria', 'austrian'], dk: ['denmark', 'danish'],
+    se: ['sweden', 'swedish'], no: ['norway', 'norwegian'], fi: ['finland', 'finnish'], pl: ['poland', 'polish'],
+    hu: ['hungary', 'hungarian'], cz: ['czechia', 'czech republic', 'czech'], tr: ['turkey', 'türkiye', 'turkiye', 'turkish'],
+    ru: ['russia', 'russian'], ua: ['ukraine', 'ukrainian'], za: ['south africa', 'south african'],
+    jp: ['japan', 'japanese'], cn: ['china', 'chinese'], kr: ['korea', 'south korea', 'korean'], in: ['india', 'indian'],
+    ph: ['philippines', 'filipino', 'filipina'], sg: ['singapore', 'singaporean'], my: ['malaysia', 'malaysian'],
+    id: ['indonesia', 'indonesian'], fj: ['fiji', 'fijian'], ws: ['samoa', 'samoan'], to: ['tonga', 'tongan'],
+  };
+  const NAME_TO_CODE = Object.fromEntries(Object.entries(COUNTRY).flatMap(([code, names]) => names.map(n => [n, code])));
+
+  function countryCodes(nationality) {
+    const codes = (nationality || '')
+      .split(/[\/&,+]| and /i)
+      .map(s => NAME_TO_CODE[s.trim().toLowerCase().replace(/[.]/g, '')])
+      .filter(Boolean);
+    return [...new Set(codes)];
+  }
+
+  function flagsHTML(nationality, max = 2) {
+    return countryCodes(nationality).slice(0, max).map(c =>
+      `<img class="flag-img" src="https://flagcdn.com/w40/${c}.png" srcset="https://flagcdn.com/w80/${c}.png 2x" alt="${c.toUpperCase()}" width="26" height="17" loading="lazy">`
+    ).join('');
+  }
+
   function nationalities(players) {
     const set = new Set();
-    players.forEach(p => (p.nationality || '')
-      .split(/[\/&,]| and /i)
-      .map(s => s.trim().toLowerCase().replace(/^colombian$/, 'colombia'))
-      .filter(Boolean)
-      .forEach(n => set.add(n)));
+    players.forEach(p => {
+      const codes = countryCodes(p.nationality);
+      // "gb" and "gb-eng" etc. count as one nation for the stat
+      if (codes.length) codes.forEach(c => set.add(c.split('-')[0]));
+      else if (p.nationality) set.add(p.nationality.trim().toLowerCase());
+    });
     return set.size;
   }
 
@@ -400,6 +443,7 @@
           <div class="card-meta">
             <div class="card-num">${esc(p.number)}</div>
             <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
+            ${countryCodes(p.nationality).length ? `<div class="card-flags">${flagsHTML(p.nationality)}</div>` : ''}
             ${tag ? `<div class="card-badge">${tag}</div>` : ''}
           </div>
           <div class="card-name">${esc(p.knownAs || p.lastName)}</div>
@@ -493,7 +537,7 @@
           <div><b>${p.yearsPlaying}</b><span>Years playing</span></div>
           <div><b>${p.tournaments}</b><span>Tournaments</span></div>
           <div><b>${p.joinedYear}</b><span>Joined AUWR</span></div>
-          ${p.nationality ? `<div class="wide"><span>Nationality</span><b>${esc(p.nationality)}</b></div>` : ''}
+          ${p.nationality ? `<div class="wide"><span>Nationality</span><b><span class="dlg-flags">${flagsHTML(p.nationality, 3)}</span>${esc(p.nationality)}</b></div>` : ''}
           ${p.favDrill ? `<div class="wide"><span>Favourite drill</span><b>${esc(p.favDrill)}</b></div>` : ''}
         </div>
         ${section('About', p.about)}
