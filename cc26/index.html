@@ -91,7 +91,8 @@
     .flag i:nth-child(2) { background: var(--de-red); }
     .flag i:nth-child(3) { background: var(--de-gold); }
     .hero-title {
-      font-family: var(--font-display); font-weight: 400; line-height: 0.82; letter-spacing: -0.01em;
+      font-family: var(--font-display); font-weight: 400; line-height: 1; letter-spacing: -0.01em;
+      padding: 0.04em 0.02em 0; /* background-clip:text clips glyphs that overflow the line box */
       font-size: clamp(3.8rem, 8vw, 6.5rem); margin: 0.6rem 0 0.35rem;
       background: linear-gradient(170deg, var(--gold-hi) 10%, var(--gold) 45%, var(--gold-lo) 90%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -99,7 +100,20 @@
     }
     .hero-sub { font-family: var(--font-display); font-size: clamp(1.05rem, 1.8vw, 1.4rem); letter-spacing: 0.02em; text-transform: uppercase; }
     .hero-sub span { color: var(--gold); }
-    .hero-join { display: inline-block; margin-top: 0.9rem; color: var(--gold); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+    .hero-brand { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.8rem; }
+    .cc-logo {
+      display: block; width: clamp(72px, 8vw, 104px); height: auto; border-radius: 50%;
+      box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(232,185,73,0.35);
+      transition: transform 0.3s;
+    }
+    .cc-logo:hover { transform: rotate(-8deg) scale(1.04); }
+    .hero-brand .hero-title { margin: 0 0 0.2rem; }
+    .hero-links { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1.25rem; margin-top: 0.9rem; }
+    .countdown {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #120d00; background: var(--gold); padding: 0.3rem 0.7rem; border-radius: 100px;
+    }
+    .hero-join { display: inline-block; color: var(--gold); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
     .hero-join:hover { text-decoration: underline; }
     .btn {
       display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.8rem; border-radius: 100px;
@@ -168,17 +182,22 @@
     .card-inner { position: absolute; inset: 3.5% 4%; clip-path: polygon(0 6%, 6.5% 0, 93.5% 0, 100% 6%, 100% 86%, 50% 100%, 0 86%); border: 0; }
     .card-inner::before { content: ''; position: absolute; inset: 0; border: 1.5px solid rgba(90,60,0,0.45); clip-path: inherit; }
     .card-photo {
-      position: absolute; left: 30%; top: 4%; height: 60%;
-      width: 70%; object-fit: cover; object-position: center 20%;
-      /* fade out bottom and left edges into the gold */
-      -webkit-mask: linear-gradient(180deg, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 22%);
-      -webkit-mask-composite: source-in;
-      mask: linear-gradient(180deg, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 22%);
-      mask-composite: intersect;
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center 22%;
+      filter: saturate(0.85) contrast(1.05);
+    }
+    /* gold overlay: light tint over the photo, solid gold behind the name/stats,
+       and a gold corner glow so the number stays readable */
+    .card-shade {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 0%, rgba(255,227,150,0.97) 0%, rgba(255,227,150,0.7) 45%, transparent 80%),
+        linear-gradient(180deg, rgba(232,185,73,0) 42%, rgba(232,185,73,0.9) 61%, #dcaa3c 70%, #b8861c 88%, #7a560f 100%),
+        linear-gradient(160deg, rgba(255,240,184,0.22), rgba(122,86,15,0.28));
     }
     .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
-    .card-num { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; }
-    .card-pos { font-weight: 800; font-size: 0.78rem; letter-spacing: 0.08em; }
+    .card-num { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; text-shadow: 0 1px 0 rgba(255,240,190,0.55); }
+    .card-pos { font-weight: 800; font-size: 0.72rem; letter-spacing: 0.08em; background: rgba(255,232,160,0.92); padding: 0.08rem 0.4rem; border-radius: 3px; }
     .card-badge {
       margin-top: 0.35rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.2rem 0.4rem;
       background: #1c1405; color: var(--gold-hi); border-radius: 3px;
@@ -192,7 +211,7 @@
     .card-stats { position: absolute; left: 12%; right: 12%; top: 77%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
     .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
     .card-stats span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.75; }
-    .card-initials { position: absolute; left: 30%; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
+    .card-initials { position: absolute; left: 0; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
 
     /* ─── EMPTY STATE ─── */
     .empty { text-align: center; padding: 2rem 0 1rem; }
@@ -298,10 +317,20 @@
   <div class="hero-bg"></div>
   <div class="hero-inner">
     <div>
-      <div class="eyebrow"><span class="flag"><i></i><i></i><i></i></span> Champions Cup · Germany 2026</div>
-      <h1 class="hero-title">CC26</h1>
-      <div class="hero-sub">Auckland <span>goes to Europe</span></div>
-      <a class="hero-join" href="join/">Selected? Add your CC26 profile →</a>
+      <div class="eyebrow"><span class="flag"><i></i><i></i><i></i></span> Champions Cup · Berlin · 27–29 Nov 2026</div>
+      <div class="hero-brand">
+        <a href="https://www.uwr24.de/cc2026/" target="_blank" rel="noopener" title="Champions Cup 2026 — official site">
+          <img class="cc-logo" src="../images/cc26/cc-logo.png" alt="Champions Cup logo" width="256" height="255">
+        </a>
+        <div>
+          <h1 class="hero-title">CC26</h1>
+          <div class="hero-sub">Auckland <span>Kingfish</span></div>
+        </div>
+      </div>
+      <div class="hero-links">
+        <span class="countdown" id="countdown" hidden></span>
+        <a class="hero-join" href="join/">Selected? Add your CC26 profile →</a>
+      </div>
     </div>
     <div class="stats" id="stats" hidden>
       <div class="stat"><div class="stat-num" id="stat-squad">0</div><div class="stat-label">Squad</div></div>
@@ -364,10 +393,10 @@
     return `
       <button class="card" style="--i:${i}" data-index="${SQUAD.indexOf(p)}" aria-label="${esc(p.firstName)} ${esc(p.lastName)}, number ${esc(p.number)}">
         <div class="card-face">
-          <div class="card-inner"></div>
           ${p.photo
-            ? `<img class="card-photo" src="${esc(p.photo)}" alt="" loading="lazy">`
+            ? `<img class="card-photo" src="${esc(p.photo)}" alt="" loading="lazy"><div class="card-shade"></div>`
             : `<div class="card-initials">${esc(initials)}</div>`}
+          <div class="card-inner"></div>
           <div class="card-meta">
             <div class="card-num">${esc(p.number)}</div>
             <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
@@ -474,6 +503,19 @@
       </div>`;
     dialog.showModal();
   }
+
+  // countdown to the first match day (Berlin, 27 Nov 2026)
+  (() => {
+    const start = new Date('2026-11-27T00:00:00+01:00');
+    const end = new Date('2026-11-30T00:00:00+01:00');
+    const now = new Date();
+    const el = document.getElementById('countdown');
+    const days = Math.ceil((start - now) / 86400000);
+    if (days > 0) el.textContent = days === 1 ? '1 day to go' : `${days} days to go`;
+    else if (now < end) el.textContent = 'Live now in Berlin';
+    else return;
+    el.hidden = false;
+  })();
 
   // close when clicking the backdrop
   dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
