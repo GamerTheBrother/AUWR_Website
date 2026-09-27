@@ -103,6 +103,8 @@
       font-weight: 700; line-height: 0.95; letter-spacing: -0.03em;
     }
     .page-title span { color: var(--accent-blue); }
+    .page-join-link { display: inline-block; margin-top: 1rem; color: var(--accent-blue); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+    .page-join-link:hover { text-decoration: underline; }
     .page-sub { margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; max-width: 400px; line-height: 1.6; }
 
     /* ─── LAYOUT ─── */
@@ -560,6 +562,7 @@
   <div class="page-eyebrow">Auckland Underwater Rugby</div>
   <h1 class="page-title">THE<br><span>ROSTER</span></h1>
   <p class="page-sub">Select a player to view their profile.</p>
+  <a class="page-join-link" href="join/">On the team? Add or update your profile →</a>
 </div>
 
 <!-- ROSTER -->
@@ -661,103 +664,10 @@
 </footer>
 
 <script>
-  /* ─── CSV ROSTER — replace data/roster.csv to update the team ─── */
+  /* ─── ROSTER — built from data/players/*.json by scripts/build_roster.mjs ─── */
 
-  const COL = {
-    firstName:   "First Name (Required for the Roster)",
-    lastName:    "Last Name (Required for the Roster)",
-    number:      "Player Number",
-    position:    "Primary Position",
-    role:        "Special Role in the Club (if any)",
-    years:       "Years Playing Underwater Rugby  (e.g., 5)",
-    tournaments: "Number of Tournaments Competed In  (e.g., 3)",
-    joined:      "Year You Joined AUWR (e.g., 2021)",
-    drill:       "Favourite Drill (The one you secretly enjoy the most!)",
-    aboveWater:  "Above Water — What do you do outside the pool? (e.g. Software Developer, Student, Gym Husband, Pilot)",
-    about:       "About You — Write 1-2 sentences in third person describing yourself as a player (Required for your profile bio!)",
-    knownAs:     "Better Known As — Nickname (Optional)",
-    funFact:     "Fun Fact about yourself",
-    quote:       "Your Phrase — One sentence that represents you as a player/teammate",
-    nationality: "Nationality  (e.g., New Zealand, Colombia, etc.)",
-  };
-
-  function parseBadges(role) {
-    const r = (role || '').trim().toLowerCase();
-    if (r.includes('captain')) return ['captain'];
-    if (r.includes('coach'))   return ['coach'];
-    return [];
-  }
-
-  function safeInt(val, fallback) {
-    const n = parseInt((val || '').trim());
-    return isNaN(n) ? (fallback !== undefined ? fallback : 0) : n;
-  }
-
-  function wrapQuote(q) {
-    q = (q || '').trim();
-    if (!q) return '';
-    if (!q.startsWith('"')) q = '"' + q;
-    if (!q.endsWith('"'))   q = q + '"';
-    return q;
-  }
-
-  function parseCSV(text) {
-    // Full-text parser — handles multiline quoted fields correctly
-    text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-
-    const rows = [];
-    let cur = '', inQuote = false, row = [];
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i];
-      if (inQuote) {
-        if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; }
-        else if (ch === '"') { inQuote = false; }
-        else { cur += ch; }
-      } else {
-        if (ch === '"')      { inQuote = true; }
-        else if (ch === ',') { row.push(cur); cur = ''; }
-        else if (ch === '\n') { row.push(cur); cur = ''; rows.push(row); row = []; }
-        else                 { cur += ch; }
-      }
-    }
-    row.push(cur); rows.push(row);
-
-    if (rows.length < 2) return [];
-    const headers = rows[0].map(h => h.trim());
-    const players = [];
-
-    for (let i = 1; i < rows.length; i++) {
-      const vals = rows[i];
-      const row  = {};
-      headers.forEach((h, idx) => { row[h] = (vals[idx] || '').trim(); });
-
-      const first = row[COL.firstName] || '';
-      const last  = row[COL.lastName]  || '';
-      if (!first && !last) continue;
-
-      players.push({
-        firstName:    first,
-        lastName:     last,
-        number:       row[COL.number]   || '0',
-        position:     row[COL.position] || 'Forward',
-        badges:       parseBadges(row[COL.role]),
-        photo:        `../images/Teamphotos/${first.trim()}_${last.trim()}.jpg`,
-        yearsPlaying: safeInt(row[COL.years]),
-        tournaments:  safeInt(row[COL.tournaments]),
-        joinedYear:   safeInt(row[COL.joined], 2020),
-        favDrill:     row[COL.drill]      || '',
-        aboveWater:   row[COL.aboveWater] || '',
-        about:        row[COL.about]      || '',
-        knownAs:      row[COL.knownAs]    || '',
-        funFact:      row[COL.funFact]    || '',
-        quote:        wrapQuote(row[COL.quote]),
-        nationality:  row[COL.nationality] || '',
-      });
-    }
-
-    players.sort((a, b) => (parseInt(a.number) || 999) - (parseInt(b.number) || 999));
-    return players;
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
   let PLAYERS = [];
@@ -769,7 +679,7 @@
     grid.innerHTML = '';
 
     if (!players.length) {
-      grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">No players found in roster.csv</p>';
+      grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">No players found</p>';
       return;
     }
 
@@ -783,17 +693,17 @@
       ).join('');
 
       card.innerHTML = `
-        <img class="card-img" src="${p.photo}" alt="${p.firstName} ${p.lastName}" onerror="this.style.display='none'">
-        <div class="card-ghost-num">${p.number}</div>
+        <img class="card-img" src="${esc(p.photo)}" alt="${esc(p.firstName)} ${esc(p.lastName)}" onerror="this.style.display='none'">
+        <div class="card-ghost-num">${esc(p.number)}</div>
         <div class="card-color-layer"></div>
         <div class="card-scanlines"></div>
         <div class="card-overlay"></div>
-        <div class="card-number">#${p.number}</div>
+        <div class="card-number">#${esc(p.number)}</div>
         <div class="card-badges-top">${badgesHTML}</div>
         <div class="card-info">
-          <div class="card-position">${p.position}</div>
-          <div class="card-first">${p.firstName}</div>
-          <div class="card-last">${p.lastName}</div>
+          <div class="card-position">${esc(p.position)}</div>
+          <div class="card-first">${esc(p.firstName)}</div>
+          <div class="card-last">${esc(p.lastName)}</div>
         </div>
         <div class="card-hint">SELECT ▶</div>
       `;
@@ -805,12 +715,12 @@
   async function loadRoster() {
     grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">Loading roster…</p>';
     try {
-      const res = await fetch('../data/roster.csv');
+      const res = await fetch('../data/roster.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      buildGrid(parseCSV(await res.text()));
+      buildGrid(await res.json());
     } catch (e) {
-      console.warn('Could not load roster.csv:', e);
-      grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">Roster unavailable — place updated roster.csv in data/</p>';
+      console.warn('Could not load roster.json:', e);
+      grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">Roster unavailable — run node scripts/build_roster.mjs</p>';
     }
   }
 
@@ -853,7 +763,7 @@
     statsEl.innerHTML = `
       <div class="stat-tile">
         <div class="stat-tile-header">Position</div>
-        <div class="stat-tile-value stat-tile-text">${p.position}</div>
+        <div class="stat-tile-value stat-tile-text">${esc(p.position)}</div>
       </div>
       <div class="stat-tile">
         <div class="stat-tile-header">Class</div>
@@ -875,12 +785,12 @@
       </div>
       <div class="stat-tile">
         <div class="stat-tile-header">Fav. Drill</div>
-        <div class="stat-tile-value stat-tile-text stat-tile-sm">${p.favDrill}</div>
+        <div class="stat-tile-value stat-tile-text stat-tile-sm">${esc(p.favDrill)}</div>
       </div>
       ${p.nationality ? `
       <div class="stat-tile" style="grid-column:1/-1">
         <div class="stat-tile-header">Nationality</div>
-        <div class="stat-tile-value stat-tile-text">${p.nationality}</div>
+        <div class="stat-tile-value stat-tile-text">${esc(p.nationality)}</div>
       </div>` : ''}
     `;
 

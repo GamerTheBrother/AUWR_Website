@@ -21,3 +21,6 @@ npm-debug.log*
 
 # Build artifacts
 dist/
+
+# Generated at deploy by scripts/build_roster.mjs
+data/roster.json

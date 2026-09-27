@@ -1,0 +1,12 @@
+name = "auwr-roster"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+GITHUB_REPO = "GamerTheBrother/AUWR_Website"
+BASE_BRANCH = "main"
+ALLOWED_ORIGINS = "https://auwr.co.nz,https://www.auwr.co.nz,http://localhost:3000"
+
+# Secrets (set with `npx wrangler secret put <NAME>`, never commit them):
+#   GITHUB_TOKEN      required
+#   TURNSTILE_SECRET  optional, enables captcha check
