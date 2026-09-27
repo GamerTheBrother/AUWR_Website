@@ -49,7 +49,8 @@
     }
     .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
     .nav-logo img { height: 40px; }
-    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2.5rem); list-style: none; }
+    .nav-links a { white-space: nowrap; }
     .nav-links a {
       color: #c8daea; text-decoration: none;
       font-size: 0.9rem; font-weight: 500; letter-spacing: 0.03em;
@@ -61,6 +62,8 @@
       transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
     }
     .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.nav-cc { color: #e8b949; font-weight: 700; }
+    .nav-links a.nav-cc::after { background: #e8b949; }
     .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
     .nav-links a.active { color: var(--accent-blue); }
     .nav-cta {
@@ -534,6 +537,7 @@
   <a href="../index.html#achievements" onclick="closeMobileMenu()">Achievements</a>
   <a href="../index.html#gallery" onclick="closeMobileMenu()">Gallery</a>
   <a href="." onclick="closeMobileMenu()">Team</a>
+  <a href="../cc26/" onclick="closeMobileMenu()" style="color:#e8b949">CC26</a>
   <a href="../index.html#about" onclick="closeMobileMenu()">About</a>
   <a href="../index.html#join" onclick="closeMobileMenu()">Join Us</a>
 </div>
@@ -548,6 +552,7 @@
     <li><a href="../index.html#achievements">Achievements</a></li>
     <li><a href="../index.html#gallery">Gallery</a></li>
     <li><a href="." class="active">Team</a></li>
+    <li><a href="../cc26/" class="nav-cc">CC26</a></li>
     <li><a href="../index.html#about">About</a></li>
     <li><a href="../index.html#join">Contact</a></li>
     <li><a href="https://auwr.co.nz/form/" target="_blank" class="nav-cta">Join Now</a></li>

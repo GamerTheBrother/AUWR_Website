@@ -1,12 +1,13 @@
 /**
  * AUWR roster submission worker
  * -----------------------------
- * POST /submit  { player: {...}, photo: "data:image/jpeg;base64,..." | null,
+ * POST /submit  { team: "club" | "cc26", player: {...},
+ *                 photo: "data:image/jpeg;base64,..." | null,
  *                 website: "" (honeypot), turnstileToken?: string }
  *
- * Creates a branch with data/players/<First_Last>.json (+ optional photo at
- * images/Teamphotos/<First_Last>.jpg) and opens a pull request against main.
- * Merging the PR = approving the profile; the Pages deploy rebuilds roster.json.
+ * Creates a branch with <team dir>/<First_Last>.json (+ optional photo in the
+ * team's photo dir) and opens a pull request against main.
+ * Merging the PR = approving the profile; the Pages deploy rebuilds the roster JSON.
  *
  * Env (wrangler.toml [vars] / secrets):
  *   GITHUB_TOKEN      secret — fine-grained PAT: Contents RW + Pull requests RW on the repo
@@ -18,7 +19,14 @@
 
 const POSITIONS = ['Forward', 'Back', 'Goalie'];
 const ROLES = ['', 'Captain', 'Vice Captain', 'Coach'];
-const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+// The forms compress photos to ~180 KB; this is only a guard against abuse.
+const MAX_PHOTO_BYTES = 1024 * 1024;
+
+// Must match TEAMS in scripts/build_roster.mjs
+const TEAMS = {
+  club: { label: 'Roster', players: 'data/players',      photos: 'images/Teamphotos' },
+  cc26: { label: 'CC26',   players: 'data/cc26/players', photos: 'images/cc26' },
+};
 const NAME_RE = /^[\p{L}\p{M}' .-]{1,40}$/u;
 
 // field -> [maxLength, required]
@@ -58,6 +66,9 @@ export default {
       if (!ok) return json({ error: 'Captcha check failed, please retry.' }, 400, cors);
     }
 
+    const team = TEAMS[body.team || 'club'];
+    if (!team) return json({ error: 'Unknown team.' }, 400, cors);
+
     const { player, errors } = validatePlayer(body.player || {});
     if (errors.length) return json({ error: errors.join(' ') }, 400, cors);
 
@@ -67,12 +78,12 @@ export default {
       if (!m) return json({ error: 'Photo must be a JPEG.' }, 400, cors);
       photoB64 = m[1];
       const bytes = Math.floor(photoB64.length * 3 / 4);
-      if (bytes > MAX_PHOTO_BYTES) return json({ error: 'Photo too large (max 3 MB).' }, 400, cors);
+      if (bytes > MAX_PHOTO_BYTES) return json({ error: 'Photo too large (max 1 MB).' }, 400, cors);
       if (!photoB64.startsWith('/9j/')) return json({ error: 'Photo must be a JPEG.' }, 400, cors); // FF D8 FF
     }
 
     try {
-      const pr = await openPullRequest(env, player, photoB64);
+      const pr = await openPullRequest(env, team, player, photoB64);
       return json({ ok: true, pr: pr.number }, 200, cors);
     } catch (e) {
       console.error(e);
@@ -145,14 +156,14 @@ async function verifyTurnstile(token, secret, ip) {
 
 /* ─── GitHub ─────────────────────────────────────────────────────────────── */
 
-async function openPullRequest(env, player, photoB64) {
+async function openPullRequest(env, team, player, photoB64) {
   const repo = env.GITHUB_REPO;
   const base = env.BASE_BRANCH || 'main';
   const gh = (path, init = {}) => github(env, `/repos/${repo}${path}`, init);
 
   const slug = `${player.firstName}_${player.lastName}`;
-  const jsonPath  = `data/players/${slug}.json`;
-  const photoPath = `images/Teamphotos/${slug}.jpg`;
+  const jsonPath  = `${team.players}/${slug}.json`;
+  const photoPath = `${team.photos}/${slug}.jpg`;
 
   const baseRef    = await gh(`/git/ref/heads/${base}`);
   const baseSha    = baseRef.object.sha;
@@ -180,41 +191,43 @@ async function openPullRequest(env, player, photoB64) {
   const commit = await gh('/git/commits', {
     method: 'POST',
     body: {
-      message: `Roster: ${verb.toLowerCase()} ${name}`,
+      message: `${team.label}: ${verb.toLowerCase()} ${name}`,
       tree: newTree.sha,
       parents: [baseSha],
       author: { name: 'AUWR Roster Form', email: 'roster-form@users.noreply.github.com' },
     },
   });
 
-  const branch = `roster/${asciiSlug(slug)}-${Date.now().toString(36)}`;
+  const branch = `${team.label.toLowerCase()}/${asciiSlug(slug)}-${Date.now().toString(36)}`;
   await gh('/git/refs', { method: 'POST', body: { ref: `refs/heads/${branch}`, sha: commit.sha } });
 
   const pr = await gh('/pulls', {
     method: 'POST',
     body: {
-      title: `Roster: ${verb} ${name} (#${player.number})`,
+      title: `${team.label}: ${verb} ${name} (#${player.number})`,
       head: branch,
       base,
-      body: prBody(repo, branch, photoPath, player, isUpdate, !!photoB64),
+      body: prBody(repo, branch, photoPath, team, player, isUpdate, !!photoB64),
     },
   });
 
   // Label is cosmetic; ignore failures (e.g. token without Issues permission).
-  await gh(`/issues/${pr.number}/labels`, { method: 'POST', body: { labels: ['roster'] } }).catch(() => {});
+  await gh(`/issues/${pr.number}/labels`, { method: 'POST', body: { labels: [team.label.toLowerCase()] } }).catch(() => {});
 
   return pr;
 }
 
-function prBody(repo, branch, photoPath, p, isUpdate, hasPhoto) {
+function prBody(repo, branch, photoPath, team, p, isUpdate, hasPhoto) {
   const md = s => String(s ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ') || '—';
   const rows = Object.entries(p).map(([k, v]) => `| ${k} | ${md(v)} |`).join('\n');
   const photo = hasPhoto
     ? `<img src="https://github.com/${repo}/blob/${branch}/${encodePath(photoPath)}?raw=true" width="220">`
-    : (isUpdate ? '_No new photo — existing photo kept._' : '⚠️ _No photo uploaded._');
+    : (isUpdate ? '_No new photo — existing photo kept._'
+       : team === TEAMS.cc26 ? "_No photo uploaded — the player's club roster photo is used if there is one._"
+       : '⚠️ _No photo uploaded._');
 
   return [
-    `Submitted via the website roster form (${isUpdate ? '**profile update**' : '**new player**'}).`,
+    `Submitted via the **${team.label}** form (${isUpdate ? '**profile update**' : '**new player**'}).`,
     '',
     photo,
     '',

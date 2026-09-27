@@ -24,4 +24,7 @@ dist/
 
 # Generated at deploy by scripts/build_roster.mjs
 data/roster.json
+data/cc26.json
+
+# Wrangler local state
 worker/.wrangler/
