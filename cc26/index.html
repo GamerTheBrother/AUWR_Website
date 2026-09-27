@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUWR | Champions Cup 2026</title>
+  <meta name="description" content="The Auckland Underwater Rugby squad heading to the Champions Cup 2026 in Germany.">
+  <link rel="icon" type="image/png" href="../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07070a;
+      --bg-2: #0f0e13;
+      --gold: #e8b949;
+      --gold-hi: #ffe396;
+      --gold-lo: #8f6614;
+      --gold-glow: rgba(232, 185, 73, 0.35);
+      --text: #f7f2e6;
+      --muted: #a8a190;
+      --line: rgba(232, 185, 73, 0.2);
+      --de-black: #111;
+      --de-red: #dd0000;
+      --de-gold: #ffce00;
+      --font-display: 'Anton', Impact, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; min-height: 100vh; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+    a { color: inherit; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 1.25rem 2.5rem; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(7,7,10,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--line);
+    }
+    .nav-logo img { height: 40px; display: block; }
+    .nav-links { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2.5rem); list-style: none; }
+    .nav-links a { white-space: nowrap; }
+    .nav-links a { color: #d9d2c0; text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.03em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--gold); }
+    .nav-cta { background: var(--gold); color: #000 !important; padding: 0.55rem 1.4rem; border-radius: 100px; font-weight: 700 !important; font-size: 0.85rem !important; }
+    .nav-cta:hover { box-shadow: 0 0 28px var(--gold-glow); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); transition: transform 0.3s, opacity 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: rgba(7,7,10,0.97); backdrop-filter: blur(20px); z-index: 199;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2.2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; font-family: var(--font-display); font-size: 2.4rem; letter-spacing: 0.02em; }
+    .mobile-menu a:hover, .mobile-menu a.active { color: var(--gold); }
+    @media (max-width: 900px) { .nav-links { display: none; } .hamburger { display: flex; } nav { padding: 1rem 1.25rem; } }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; min-height: 88vh; display: flex; align-items: flex-end;
+      padding: 9rem 2.5rem 4rem; overflow: hidden; isolation: isolate;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: -2;
+      background: url('../images/photos/ChampionsCup.jpg') center / cover no-repeat;
+      filter: grayscale(0.6) contrast(1.1) brightness(0.38) blur(14px);
+      transform: scale(1.15); /* hides blurred edges */
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 30%, rgba(232,185,73,0.25), transparent 60%),
+        linear-gradient(180deg, rgba(7,7,10,0.2) 0%, rgba(7,7,10,0.55) 55%, var(--bg) 100%);
+    }
+    .hero-inner { max-width: 1400px; width: 100%; margin: 0 auto; }
+    .eyebrow { display: flex; align-items: center; gap: 0.8rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
+    .flag { display: inline-flex; width: 26px; height: 16px; flex-direction: column; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
+    .flag i { flex: 1; }
+    .flag i:nth-child(1) { background: var(--de-black); }
+    .flag i:nth-child(2) { background: var(--de-red); }
+    .flag i:nth-child(3) { background: var(--de-gold); }
+    .hero-title {
+      font-family: var(--font-display); font-weight: 400; line-height: 0.82; letter-spacing: -0.01em;
+      font-size: clamp(6rem, 22vw, 20rem); margin: 1rem 0 0.5rem;
+      background: linear-gradient(170deg, var(--gold-hi) 10%, var(--gold) 45%, var(--gold-lo) 90%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 10px 40px rgba(232,185,73,0.25));
+    }
+    .hero-sub { font-family: var(--font-display); font-size: clamp(1.4rem, 3.4vw, 2.6rem); letter-spacing: 0.02em; text-transform: uppercase; }
+    .hero-sub span { color: var(--gold); }
+    .hero-lede { color: var(--muted); max-width: 520px; margin-top: 1rem; line-height: 1.6; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.8rem; border-radius: 100px;
+      font-weight: 700; font-size: 0.92rem; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .btn-gold { background: linear-gradient(135deg, var(--gold-hi), var(--gold) 50%, #c9951f); color: #120d00; }
+    .btn-gold:hover { box-shadow: 0 0 34px var(--gold-glow); transform: translateY(-2px); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    .tricolor { height: 6px; display: flex; }
+    .tricolor i { flex: 1; }
+    .tricolor i:nth-child(1) { background: #222; } /* pure black vanishes on the page bg */
+    .tricolor i:nth-child(2) { background: var(--de-red); }
+    .tricolor i:nth-child(3) { background: var(--de-gold); }
+
+    /* ─── SQUAD STATS STRIP ─── */
+    .stats {
+      max-width: 1400px; width: calc(100% - 5rem); margin: 2.5rem auto 0;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .stat { background: var(--bg); padding: 1.4rem 1.25rem; }
+    .stat-num { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1; color: var(--gold); }
+    .stat-label { margin-top: 0.4rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+    /* ─── SQUAD ─── */
+    .squad { max-width: 1400px; margin: 0 auto; padding: 4rem 2.5rem 5rem; }
+    .group + .group { margin-top: 4rem; }
+    .group-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; }
+    .group-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4vw, 3rem); text-transform: uppercase; letter-spacing: 0.01em; }
+    .group-head .count { color: var(--gold); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.15em; }
+    .group-head::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); align-self: center; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.75rem; }
+
+    /* FUT-style gold card */
+    .card {
+      --rx: 0deg; --ry: 0deg;
+      position: relative; aspect-ratio: 3 / 4.25; border: none; cursor: pointer; padding: 0; color: #1c1405;
+      font: inherit; text-align: left; background: none;
+      transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+      transition: transform 0.2s ease-out, filter 0.2s;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.55));
+      animation: deal 0.6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 60ms);
+    }
+    .card:hover, .card:focus-visible { filter: drop-shadow(0 18px 40px rgba(232,185,73,0.35)); outline: none; }
+    @keyframes deal { from { opacity: 0; transform: translateY(30px) rotateX(20deg); } }
+    .card-face {
+      position: absolute; inset: 0; overflow: hidden;
+      clip-path: polygon(0 7%, 7% 0, 93% 0, 100% 7%, 100% 86%, 50% 100%, 0 86%);
+      background:
+        radial-gradient(ellipse 90% 60% at 50% 20%, rgba(255,255,255,0.55), transparent 60%),
+        linear-gradient(160deg, #fff0b8 0%, var(--gold-hi) 18%, var(--gold) 48%, #b8861c 80%, #7a560f 100%);
+    }
+    .card-face::before { /* engraved pattern */
+      content: ''; position: absolute; inset: 0; opacity: 0.18;
+      background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(90,60,0,0.6) 10px 11px);
+      mask: linear-gradient(180deg, #000, transparent 70%);
+    }
+    .card-face::after { /* shine sweep */
+      content: ''; position: absolute; inset: -40%; transform: translateX(-60%) rotate(20deg);
+      background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.7) 50%, transparent 60%);
+      transition: transform 0.7s ease;
+    }
+    .card:hover .card-face::after { transform: translateX(60%) rotate(20deg); }
+    .card-inner { position: absolute; inset: 3.5% 4%; clip-path: polygon(0 6%, 6.5% 0, 93.5% 0, 100% 6%, 100% 86%, 50% 100%, 0 86%); border: 0; }
+    .card-inner::before { content: ''; position: absolute; inset: 0; border: 1.5px solid rgba(90,60,0,0.45); clip-path: inherit; }
+    .card-photo {
+      position: absolute; left: 30%; top: 4%; height: 60%;
+      width: 70%; object-fit: cover; object-position: center 20%;
+      /* fade out bottom and left edges into the gold */
+      -webkit-mask: linear-gradient(180deg, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 22%);
+      -webkit-mask-composite: source-in;
+      mask: linear-gradient(180deg, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 22%);
+      mask-composite: intersect;
+    }
+    .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
+    .card-num { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 2.9rem); line-height: 0.9; }
+    .card-pos { font-weight: 800; font-size: 0.78rem; letter-spacing: 0.08em; }
+    .card-badge {
+      margin-top: 0.35rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.2rem 0.4rem;
+      background: #1c1405; color: var(--gold-hi); border-radius: 3px;
+    }
+    .card-name {
+      position: absolute; left: 0; right: 0; top: 64%; text-align: center; z-index: 1;
+      font-family: var(--font-display); font-size: clamp(1.15rem, 2.2vw, 1.45rem); letter-spacing: 0.02em; text-transform: uppercase;
+      padding: 0 8%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-rule { position: absolute; left: 14%; right: 14%; top: 74.5%; height: 1px; background: rgba(60,40,0,0.45); }
+    .card-stats { position: absolute; left: 12%; right: 12%; top: 77%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+    .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
+    .card-stats span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.75; }
+    .card-initials { position: absolute; left: 30%; right: 0; top: 10%; height: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 4.5rem; color: rgba(60,40,0,0.35); }
+
+    /* ─── EMPTY STATE ─── */
+    .empty { text-align: center; padding: 2rem 0 1rem; }
+    .empty-cards { display: flex; justify-content: center; gap: 1.25rem; margin-bottom: 2.5rem; }
+    .ghost-card {
+      width: 150px; aspect-ratio: 3 / 4.25; opacity: 0.9;
+      clip-path: polygon(0 7%, 7% 0, 93% 0, 100% 7%, 100% 86%, 50% 100%, 0 86%);
+      background: linear-gradient(160deg, rgba(232,185,73,0.22), rgba(232,185,73,0.04));
+      display: grid; place-items: center; font-family: var(--font-display); font-size: 3.5rem; color: rgba(232,185,73,0.45);
+    }
+    .ghost-card:nth-child(2) { transform: translateY(-14px); }
+    .empty h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); text-transform: uppercase; }
+    .empty p { color: var(--muted); margin: 0.75rem auto 1.75rem; max-width: 440px; line-height: 1.6; }
+
+    /* ─── PROFILE DIALOG ─── */
+    dialog {
+      margin: auto; border: 1px solid var(--line); border-radius: 18px; padding: 0; color: var(--text);
+      background: var(--bg-2); width: min(920px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: hidden;
+    }
+    dialog::backdrop { background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); }
+    dialog[open] { animation: pop 0.3s cubic-bezier(.2,.8,.2,1); }
+    @keyframes pop { from { opacity: 0; transform: translateY(20px) scale(0.97); } }
+    .dlg { display: grid; grid-template-columns: 0.9fr 1.1fr; max-height: calc(100vh - 2rem); }
+    .dlg-photo { position: relative; background: #000; min-height: 420px; }
+    .dlg-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+    .dlg-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(15,14,19,0.95) 0%, transparent 45%); }
+    .dlg-num { position: absolute; left: 1.5rem; bottom: 1rem; z-index: 1; font-family: var(--font-display); font-size: 6rem; line-height: 0.85; color: var(--gold); }
+    .dlg-body { padding: 2.25rem 2rem 2rem; overflow-y: auto; }
+    .dlg-close { position: absolute; top: 0.9rem; right: 0.9rem; z-index: 2; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: rgba(7,7,10,0.7); color: var(--text); font-size: 1.1rem; cursor: pointer; }
+    .dlg-close:hover { border-color: var(--gold); color: var(--gold); }
+    .dlg-tag { color: var(--gold); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    .dlg-name { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 0.95; text-transform: uppercase; margin: 0.5rem 0 0.25rem; }
+    .dlg-known { color: var(--muted); font-style: italic; }
+    .dlg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .dlg-grid div { background: var(--bg-2); padding: 0.8rem 0.9rem; }
+    .dlg-grid b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--gold); line-height: 1.1; }
+    .dlg-grid span { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .dlg-grid .wide { grid-column: 1 / -1; }
+    .dlg-grid .wide b { font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; color: var(--text); }
+    .dlg-sec + .dlg-sec { margin-top: 1.1rem; }
+    .dlg-sec h3 { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; }
+    .dlg-sec p { color: #ddd6c4; line-height: 1.6; font-size: 0.94rem; }
+    .dlg-quote { margin-top: 1.5rem; padding-left: 1rem; border-left: 3px solid var(--gold); font-style: italic; font-size: 1.05rem; color: var(--gold-hi); line-height: 1.5; }
+
+    footer { border-top: 1px solid var(--line); padding: 1.75rem 2.5rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 760px) {
+      .hero { padding: 7.5rem 1rem 3rem; min-height: 80vh; }
+      .stats { grid-template-columns: repeat(2, 1fr); width: calc(100% - 2rem); margin-top: 2rem; }
+      .squad { padding: 3rem 1rem 4rem; }
+      .cards { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .card-stats b { font-size: 0.95rem; }
+      .card-stats span { font-size: 0.5rem; }
+      .card-num { font-size: 1.8rem; }
+      .card-pos { font-size: 0.66rem; }
+      .card-name { font-size: 1rem; }
+      .ghost-card { width: 96px; font-size: 2.4rem; }
+      .dlg { grid-template-columns: 1fr; overflow-y: auto; }
+      .dlg-photo { min-height: 300px; }
+      .dlg-body { overflow: visible; padding: 1.5rem 1.25rem; }
+      footer { padding: 1.5rem 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card, dialog[open] { animation: none; }
+      .card { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html#sport" onclick="closeMobileMenu()">Sport</a>
+  <a href="../index.html#achievements" onclick="closeMobileMenu()">Achievements</a>
+  <a href="../index.html#gallery" onclick="closeMobileMenu()">Gallery</a>
+  <a href="../team/" onclick="closeMobileMenu()">Team</a>
+  <a href="." class="active" onclick="closeMobileMenu()">CC26</a>
+  <a href="../index.html#about" onclick="closeMobileMenu()">About</a>
+  <a href="../index.html#join" onclick="closeMobileMenu()">Join Us</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="../index.html"><img src="../img/img7.png" alt="AUWR"></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#sport">Sport</a></li>
+    <li><a href="../index.html#achievements">Achievements</a></li>
+    <li><a href="../index.html#gallery">Gallery</a></li>
+    <li><a href="../team/">Team</a></li>
+    <li><a href="." class="active">CC26</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#join">Contact</a></li>
+    <li><a href="https://auwr.co.nz/form/" target="_blank" class="nav-cta">Join Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="flag"><i></i><i></i><i></i></span> Champions Cup · Germany 2026</div>
+    <h1 class="hero-title">CC26</h1>
+    <div class="hero-sub">Auckland <span>goes to Europe</span></div>
+    <p class="hero-lede">The AUWR squad taking on the best underwater rugby clubs in the world at the Champions Cup 2026.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#squad">Meet the squad ↓</a>
+      <a class="btn btn-ghost" href="join/">Selected? Add your CC26 profile →</a>
+    </div>
+  </div>
+</header>
+<div class="tricolor"><i></i><i></i><i></i></div>
+
+<section class="stats" id="stats" hidden>
+  <div class="stat"><div class="stat-num" id="stat-squad">0</div><div class="stat-label">Squad</div></div>
+  <div class="stat"><div class="stat-num" id="stat-years">0</div><div class="stat-label">Combined years played</div></div>
+  <div class="stat"><div class="stat-num" id="stat-tourn">0</div><div class="stat-label">Tournaments between us</div></div>
+  <div class="stat"><div class="stat-num" id="stat-nations">0</div><div class="stat-label">Nationalities</div></div>
+</section>
+
+<main class="squad" id="squad">
+  <p style="color:var(--muted);text-align:center">Loading squad…</p>
+</main>
+
+<dialog id="profile" aria-labelledby="dlg-name">
+  <button class="dlg-close" onclick="document.getElementById('profile').close()" aria-label="Close">✕</button>
+  <div class="dlg" id="dlg"></div>
+</dialog>
+
+<footer>
+  <p><a href="../index.html">← Back to Home</a> &nbsp;·&nbsp; <a href="../team/">Club roster</a> &nbsp;·&nbsp; AUWR © 2026</p>
+</footer>
+
+<script>
+  /* ─── CC26 SQUAD — built from data/cc26/players/*.json by scripts/build_roster.mjs ─── */
+
+  const GROUPS = [
+    { title: 'Goalies',  match: 'Goalie'  },
+    { title: 'Backs',    match: 'Back'    },
+    { title: 'Forwards', match: 'Forward' },
+  ];
+  const POS_SHORT = { Goalie: 'GK', Back: 'BK', Forward: 'FW' };
+
+  const squadEl = document.getElementById('squad');
+  const dialog  = document.getElementById('profile');
+  let SQUAD = [];
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function roleTag(p) {
+    const r = (p.role || '').toLowerCase();
+    if (r.includes('vice')) return 'VC';
+    if (r.includes('captain')) return 'C';
+    if (r.includes('coach')) return 'COACH';
+    return '';
+  }
+
+  function nationalities(players) {
+    const set = new Set();
+    players.forEach(p => (p.nationality || '')
+      .split(/[\/&,]| and /i)
+      .map(s => s.trim().toLowerCase().replace(/^colombian$/, 'colombia'))
+      .filter(Boolean)
+      .forEach(n => set.add(n)));
+    return set.size;
+  }
+
+  function cardHTML(p, i) {
+    const tag = roleTag(p);
+    const initials = (p.firstName[0] || '') + (p.lastName[0] || '');
+    return `
+      <button class="card" style="--i:${i}" data-index="${SQUAD.indexOf(p)}" aria-label="${esc(p.firstName)} ${esc(p.lastName)}, number ${esc(p.number)}">
+        <div class="card-face">
+          <div class="card-inner"></div>
+          ${p.photo
+            ? `<img class="card-photo" src="${esc(p.photo)}" alt="" loading="lazy">`
+            : `<div class="card-initials">${esc(initials)}</div>`}
+          <div class="card-meta">
+            <div class="card-num">${esc(p.number)}</div>
+            <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
+            ${tag ? `<div class="card-badge">${tag}</div>` : ''}
+          </div>
+          <div class="card-name">${esc(p.knownAs || p.lastName)}</div>
+          <div class="card-rule"></div>
+          <div class="card-stats">
+            <div><b>${p.yearsPlaying}</b><span>YRS</span></div>
+            <div><b>${p.tournaments}</b><span>TRN</span></div>
+            <div><b>${String(p.joinedYear).slice(-2)}</b><span>EST</span></div>
+          </div>
+        </div>
+      </button>`;
+  }
+
+  function render(players) {
+    SQUAD = players;
+    if (!players.length) {
+      squadEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-cards"><div class="ghost-card">?</div><div class="ghost-card">?</div><div class="ghost-card">?</div></div>
+          <h2>Squad reveal coming soon</h2>
+          <p>Selected for the Champions Cup? Add your CC26 profile — once approved you'll show up here.</p>
+          <a class="btn btn-gold" href="join/">Add your CC26 profile →</a>
+        </div>`;
+      return;
+    }
+
+    document.getElementById('stats').hidden = false;
+    countUp('stat-squad', players.length);
+    countUp('stat-years', players.reduce((s, p) => s + p.yearsPlaying, 0));
+    countUp('stat-tourn', players.reduce((s, p) => s + p.tournaments, 0));
+    countUp('stat-nations', nationalities(players));
+
+    let i = 0;
+    squadEl.innerHTML = GROUPS.map(g => {
+      const list = players.filter(p => p.position === g.match);
+      if (!list.length) return '';
+      return `
+        <section class="group">
+          <div class="group-head"><h2>${g.title}</h2><span class="count">${String(list.length).padStart(2, '0')}</span></div>
+          <div class="cards">${list.map(p => cardHTML(p, i++)).join('')}</div>
+        </section>`;
+    }).join('');
+
+    squadEl.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => openProfile(SQUAD[card.dataset.index]));
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--ry', `${((e.clientX - r.left) / r.width - 0.5) * 14}deg`);
+        card.style.setProperty('--rx', `${-((e.clientY - r.top) / r.height - 0.5) * 14}deg`);
+      });
+      card.addEventListener('mouseleave', () => { card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg'); });
+    });
+  }
+
+  function countUp(id, target) {
+    const el = document.getElementById(id);
+    const start = performance.now();
+    const step = now => {
+      const t = Math.min(1, (now - start) / 1200);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function section(title, text) {
+    return text ? `<div class="dlg-sec"><h3>${title}</h3><p>${esc(text)}</p></div>` : '';
+  }
+
+  function openProfile(p) {
+    const tag = roleTag(p);
+    const tagText = { C: 'Captain', VC: 'Vice Captain', COACH: 'Coach' }[tag];
+    document.getElementById('dlg').innerHTML = `
+      <div class="dlg-photo">
+        ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.firstName)} ${esc(p.lastName)}">` : ''}
+        <div class="dlg-num">${esc(p.number)}</div>
+      </div>
+      <div class="dlg-body">
+        <div class="dlg-tag">${esc(p.position)}${tagText ? ' · ' + tagText : ''}</div>
+        <h2 class="dlg-name" id="dlg-name">${esc(p.firstName)}<br>${esc(p.lastName)}</h2>
+        ${p.knownAs ? `<div class="dlg-known">aka '${esc(p.knownAs)}'</div>` : ''}
+        <div class="dlg-grid">
+          <div><b>${p.yearsPlaying}</b><span>Years playing</span></div>
+          <div><b>${p.tournaments}</b><span>Tournaments</span></div>
+          <div><b>${p.joinedYear}</b><span>Joined AUWR</span></div>
+          ${p.nationality ? `<div class="wide"><span>Nationality</span><b>${esc(p.nationality)}</b></div>` : ''}
+          ${p.favDrill ? `<div class="wide"><span>Favourite drill</span><b>${esc(p.favDrill)}</b></div>` : ''}
+        </div>
+        ${section('About', p.about)}
+        ${section('Above water', p.aboveWater)}
+        ${section('Fun fact', p.funFact)}
+        ${p.quote ? `<blockquote class="dlg-quote">${esc(p.quote)}</blockquote>` : ''}
+      </div>`;
+    dialog.showModal();
+  }
+
+  // close when clicking the backdrop
+  dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+
+  fetch('../data/cc26.json')
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    .then(render)
+    .catch(e => {
+      console.warn('Could not load cc26.json:', e);
+      squadEl.innerHTML = '<p style="color:var(--muted);text-align:center">Squad unavailable — run node scripts/build_roster.mjs</p>';
+    });
+
+  function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  }
+</script>
+</body>
+</html>
