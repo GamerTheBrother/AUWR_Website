@@ -198,7 +198,8 @@
         linear-gradient(160deg, rgba(255,240,184,0.1), rgba(122,86,15,0.16));
     }
     .card-meta { position: absolute; left: 8%; top: 8%; display: grid; justify-items: center; gap: 0.15rem; z-index: 1; }
-    .card-flags { display: grid; gap: 0.25rem; margin-top: 0.3rem; }
+    .card-flags { display: flex; gap: 0.2rem; flex: none; }
+    .card-flags .flag-img { width: 20px; }
     .flag-img { display: block; width: 26px; height: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(40,25,0,0.35), 0 2px 5px rgba(0,0,0,0.35); }
     .dlg-flags { display: inline-flex; gap: 0.35rem; vertical-align: -2px; margin-right: 0.45rem; }
     .dlg-flags .flag-img { width: 22px; }
@@ -209,11 +210,14 @@
       background: #1c1405; color: var(--gold-hi); border-radius: 3px;
     }
     .card-name {
-      position: absolute; left: 0; right: 0; top: 66.5%; text-align: center; z-index: 1;
+      position: absolute; left: 0; right: 0; top: 66.5%; z-index: 1;
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
       text-shadow: 0 1px 0 rgba(255,236,170,0.45);
       font-family: var(--font-display); font-size: clamp(1.15rem, 2.2vw, 1.45rem); letter-spacing: 0.02em; text-transform: uppercase;
-      padding: 0 8%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      padding: 0 8%; white-space: nowrap;
     }
+    .card-name-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .card-name.is-long { font-size: clamp(0.95rem, 1.7vw, 1.15rem); }
     .card-rule { position: absolute; left: 14%; right: 14%; top: 76.5%; height: 1px; background: rgba(60,40,0,0.45); }
     .card-stats { position: absolute; left: 12%; right: 12%; top: 78.5%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
     .card-stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; line-height: 1; }
@@ -430,6 +434,8 @@
     return set.size;
   }
 
+  const displayName = p => p.knownAs || p.lastName;
+
   function cardHTML(p, i) {
     const tag = roleTag(p);
     const initials = (p.firstName[0] || '') + (p.lastName[0] || '');
@@ -443,10 +449,12 @@
           <div class="card-meta">
             <div class="card-num">${esc(p.number)}</div>
             <div class="card-pos">${POS_SHORT[p.position] || esc(p.position)}</div>
-            ${countryCodes(p.nationality).length ? `<div class="card-flags">${flagsHTML(p.nationality)}</div>` : ''}
             ${tag ? `<div class="card-badge">${tag}</div>` : ''}
           </div>
-          <div class="card-name">${esc(p.knownAs || p.lastName)}</div>
+          <div class="card-name${displayName(p).length + 2 * Math.min(2, countryCodes(p.nationality).length) > 11 ? ' is-long' : ''}">
+            ${countryCodes(p.nationality).length ? `<span class="card-flags">${flagsHTML(p.nationality)}</span>` : ''}
+            <span class="card-name-text">${esc(displayName(p))}</span>
+          </div>
           <div class="card-rule"></div>
           <div class="card-stats">
             <div><b>${p.yearsPlaying}</b><span>YRS</span></div>
